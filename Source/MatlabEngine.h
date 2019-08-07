@@ -4,6 +4,10 @@
 #include <ProcessorHeaders.h>
 #include "MatlabEngineEditor.h"
 
+#include "MatlabDataArray.hpp"
+#include "MatlabEngine.hpp"
+#include <iostream>
+
 class MatlabEngine : public GenericProcessor
 {
 public:
@@ -26,6 +30,12 @@ public:
 	//void loadCustomParametersFromXml() override;
 
 	void updateSettings() override;
+
+	void startMATLAB();
+
+private:
+
+	std::unique_ptr<matlab::engine::MATLABEngine> matlab;
 
 };
 
