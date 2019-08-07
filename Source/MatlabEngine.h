@@ -1,34 +1,32 @@
-#include "ProcessorPlugin.h"
+#ifndef MATLABENGINE_H_DEFINED
+#define MATLABENGINE_H_DEFINED
 
-using namespace ProcessorPluginSpace;
+#include <ProcessorHeaders.h>
+#include "MatlabEngineEditor.h"
 
-//Change all names for the relevant ones, including "Processor Name"
-ProcessorPlugin::ProcessorPlugin() : GenericProcessor("Processor Name")
+class MatlabEngine : public GenericProcessor
 {
+public:
+	MatlabEngine();
+	~MatlabEngine();
 
-}
+	bool hasEditor() const { return true; }
+	AudioProcessorEditor* createEditor() override;
 
-ProcessorPlugin::~ProcessorPlugin()
-{
+	void process(AudioSampleBuffer& buffer) override;
 
-}
+	void handleEvent(const EventChannel* eventInfo, const MidiMessage& event, int samplePosition) override;
 
-void ProcessorPlugin::process(AudioSampleBuffer& buffer)
-{
-	/** 
-	If the processor needs to handle events, this method must be called onyl once per process call
-	If spike processing is also needing, set the argument to true
-	*/
-	//checkForEvents(false);
-	int numChannels = getNumOutputs();
+	void setParameter(int parameterIndex, float newValue) override;
 
-	for (int chan = 0; chan < numChannels; chan++)
-	{
-		int numSamples = getNumSamples(chan);
-		int64 timestamp = getTimestamp(chan);
+	/** Saving custom settings to XML. */
+	//void saveCustomParametersToXml(XmlElement* parentElement) override;
 
-		//Do whatever processing needed
-	}
-	 
-}
+	/** Load custom settings from XML*/
+	//void loadCustomParametersFromXml() override;
 
+	void updateSettings() override;
+
+};
+
+#endif

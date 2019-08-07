@@ -1,24 +1,24 @@
-#include "ProcessorPlugin.h"
-
-using namespace ProcessorPluginSpace;
+#include "MatlabEngine.h"
 
 //Change all names for the relevant ones, including "Processor Name"
-ProcessorPlugin::ProcessorPlugin() : GenericProcessor("Processor Name")
+MatlabEngine::MatlabEngine() : GenericProcessor("Matlab Engine")
+{
+	setProcessorType(PROCESSOR_TYPE_SINK);
+}
+
+MatlabEngine::~MatlabEngine()
 {
 
 }
 
-ProcessorPlugin::~ProcessorPlugin()
+AudioProcessorEditor* MatlabEngine::createEditor()
 {
-
+    editor = new MatlabEngineEditor (this, true);
+    return editor;
 }
 
-void ProcessorPlugin::process(AudioSampleBuffer& buffer)
+void MatlabEngine::process(AudioSampleBuffer& buffer)
 {
-	/** 
-	If the processor needs to handle events, this method must be called onyl once per process call
-	If spike processing is also needing, set the argument to true
-	*/
 	//checkForEvents(false);
 	int numChannels = getNumOutputs();
 
@@ -30,5 +30,20 @@ void ProcessorPlugin::process(AudioSampleBuffer& buffer)
 		//Do whatever processing needed
 	}
 	 
+}
+
+void MatlabEngine::handleEvent(const EventChannel* eventInfo, const MidiMessage& event, int samplePosition)
+{
+    //TODO
+}
+
+void MatlabEngine::setParameter (int parameterIndex, float newValue)
+{
+    //TODO
+}
+
+void MatlabEngine::updateSettings()
+{
+	//TODO
 }
 
