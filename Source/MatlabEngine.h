@@ -11,6 +11,8 @@
 #include <chrono>
 #include <functional>
 
+#define MAX_MESSAGE_SIZE 2000
+
 template <typename Time = std::chrono::microseconds, typename Clock = std::chrono::high_resolution_clock>
 struct func_timer
 {
@@ -49,11 +51,32 @@ public:
 	void updateSettings() override;
 
 	void startMatlab();
+	void runTest();
+	void openSocket();
 
 private:
 
 	std::unique_ptr<matlab::engine::MATLABEngine> matlab;
 
+	matlab::data::ArrayFactory factory;
+
+	std::vector<float> matlab_data;
+
+	int count;
+
+};
+
+//This class acts as a server to stream incoming Neuropixel data to Matlab
+//A socket is one end of an interprocess communication channel...
+class MatlabSocket : public StreamingSocket
+{
+public:
+	MatlabSocket();
+	~MatlabSocket();
+private:
+	ScopedPointer<StreamingSocket> connection;
+	int port;
+	bool connected; //true if client (Matlab) has connected
 };
 
 #endif

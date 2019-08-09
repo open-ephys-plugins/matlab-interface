@@ -2,7 +2,7 @@
 ------------------------------------------------------------------
 
 This file is part of the Open Ephys GUI
-Copyright (C) 2014 Open Ephys
+Copyright (C) 2019 Open Ephys
 
 ------------------------------------------------------------------
 
@@ -40,7 +40,21 @@ MatlabEngineEditor::MatlabEngineEditor(MatlabEngine* parentNode, bool useDefault
 	connectButton->addListener(this);
 	addAndMakeVisible(connectButton);
 
+
+	testButton = new UtilityButton("RUN TEST", Font("Small Text", 13, Font::bold));
+	testButton->setRadius(3.0f);
+	testButton->setBounds(10, 55, 65, 25);
+	testButton->addListener(this);
+	addAndMakeVisible(testButton);
+
+	socketButton = new UtilityButton("OPEN SOCKET", Font("Small Text", 13, Font::bold));
+	socketButton->setRadius(3.0f);
+	socketButton->setBounds(10, 85, 100, 25);
+	socketButton->addListener(this);
+	addAndMakeVisible(socketButton);
+
 	startTimer(UI_TIMER_PERIOD);
+
 
 }
 
@@ -52,14 +66,43 @@ MatlabEngineEditor::~MatlabEngineEditor()
 void MatlabEngineEditor::timerCallback()
 {
 
-	//update the UI 
+	runTest();
+	stopTimer();
 
 }
+
 void MatlabEngineEditor::buttonEvent(Button* button)
 {
-	auto startupTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::startMatlab, engine);
-	auto dispTime = std::chrono::duration<double, std::milli>(startupTime).count();
-	printf("MATLAB startup time: %1.3f\n", dispTime); fflush(stdout);
+
+	if (button == connectButton)
+	{
+		auto startupTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::startMatlab, engine);
+		auto dispTime = std::chrono::duration<double, std::milli>(startupTime).count();
+		printf("MATLAB startup time: %1.3f [ms]\n", dispTime); fflush(stdout);
+	}
+	else if (button == testButton)
+	{
+		auto testTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::runTest, engine);
+		auto dispTime = std::chrono::duration<double, std::micro>(testTime).count();
+		printf("Run test time: %.0f [us]\n ", dispTime); fflush(stdout);
+	}
+	else if (button == socketButton)
+	{
+		printf("Opening socket to MATLAB...\n");
+		auto openSocketTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::openSocket, engine);
+		auto dispTime = std::chrono::duration<double, std::milli>(openSocketTime).count();
+		printf("Open socket time: %0.f [ms]\n ", dispTime); fflush(stdout);
+	}
+}
+
+void MatlabEngineEditor::runTest()
+{
+
+	/* Simulate pressing socket button */
+	std::cout << "Simulating socket button press...";
+	buttonEvent(socketButton);
+	std::cout << "Done simulating socket button press!" << std::endl;
+	
 }
 
 

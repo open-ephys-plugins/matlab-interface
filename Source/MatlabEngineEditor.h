@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <EditorHeaders.h>
 #include "MatlabEngine.h"
 
-#define UI_TIMER_PERIOD 500 //Update the UI every UI_TIMER_PERIOD ms
+#define UI_TIMER_PERIOD 2000 //Update the UI every UI_TIMER_PERIOD ms
 
 class MatlabEngine;
 
@@ -42,12 +42,17 @@ public:
 
 	void buttonEvent(Button* button);
 
+	void runTest();
+
+
 private:
 
 	MatlabEngine* engine;
 
 	//Define UI Elements here...
 	ScopedPointer<UtilityButton> connectButton;
+	ScopedPointer<UtilityButton> testButton;
+	ScopedPointer<UtilityButton> socketButton;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MatlabEngineEditor);
 
