@@ -27,8 +27,7 @@ set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS
 	$<$<CONFIG:Debug>:DEBUG=1>
 	$<$<CONFIG:Debug>:_DEBUG=1>
 	$<$<CONFIG:Release>:NDEBUG=1>
-	)
-
+)
 
 set(SOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Source)
 file(GLOB_RECURSE SRC_FILES LIST_DIRECTORIES false "${SOURCE_PATH}/*.cpp" "${SOURCE_PATH}/*.h")
@@ -56,6 +55,9 @@ if (NOT CMAKE_LIBRARY_ARCHITECTURE)
 		set(CMAKE_LIBRARY_ARCHITECTURE "x86")
 	endif()
 endif()
+
+set_property(TARGET ${PLUGIN_NAME} PROPERTY CXX_STANDARD 17)
+
 
 #Libraries and compiler options
 if(MSVC)

@@ -30,11 +30,15 @@ MatlabEngineEditor::MatlabEngineEditor(MatlabEngine* parentNode, bool useDefault
 
 {
 
-	mEngine = parentNode;
+	engine = parentNode;
 
 	desiredWidth = 150;
 
-	//Init UI elements 
+	connectButton = new UtilityButton("CONNECT", Font("Small Text", 13, Font::bold));
+	connectButton->setRadius(3.0f);
+	connectButton->setBounds(10, 25, 65, 25);
+	connectButton->addListener(this);
+	addAndMakeVisible(connectButton);
 
 	startTimer(UI_TIMER_PERIOD);
 
@@ -50,6 +54,12 @@ void MatlabEngineEditor::timerCallback()
 
 	//update the UI 
 
+}
+void MatlabEngineEditor::buttonEvent(Button* button)
+{
+	auto startupTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::startMatlab, engine);
+	auto dispTime = std::chrono::duration<double, std::milli>(startupTime).count();
+	printf("MATLAB startup time: %1.3f\n", dispTime); fflush(stdout);
 }
 
 

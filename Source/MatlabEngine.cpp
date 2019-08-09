@@ -4,8 +4,6 @@ MatlabEngine::MatlabEngine() : GenericProcessor("Matlab Engine")
 {
 	setProcessorType(PROCESSOR_TYPE_SINK);
 
-	startMATLAB();
-
 }
 
 MatlabEngine::~MatlabEngine()
@@ -13,7 +11,7 @@ MatlabEngine::~MatlabEngine()
 
 }
 
-void MatlabEngine::startMATLAB()
+void MatlabEngine::startMatlab()
 {
 	if (matlab == nullptr)
 	{

@@ -40,11 +40,14 @@ public:
 
 	void timerCallback();
 
+	void buttonEvent(Button* button);
+
 private:
 
-	MatlabEngine* mEngine;
+	MatlabEngine* engine;
 
 	//Define UI Elements here...
+	ScopedPointer<UtilityButton> connectButton;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MatlabEngineEditor);
 
