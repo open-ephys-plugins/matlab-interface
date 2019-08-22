@@ -27,6 +27,7 @@ struct func_timer
 	} 
 };
 
+//
 class MatlabEngine : public GenericProcessor
 {
 public:
@@ -66,8 +67,7 @@ private:
 
 };
 
-//This class acts as a server to stream incoming Neuropixel data to Matlab
-//A socket is one end of an interprocess communication channel...
+//A juce::StreamingSocket class optimized for streaming data to Matlab
 class MatlabSocket : public StreamingSocket
 {
 public:

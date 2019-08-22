@@ -4,9 +4,10 @@ MatlabSocket::MatlabSocket() : StreamingSocket(), port(1234)
 {
 
 	char buffer[MAX_MESSAGE_SIZE];
-	char stream[] = "TEST STREAM";
+	char stream[] = "TEST STREAM\n";
 
 	createListener(port,""); //empty string means use localhost address (127.0.0.1)
+	std::cout << "Waiting for next connection...\n" << std::endl; fflush(stdout);
 	connection = waitForNextConnection();
 	if (connection != nullptr)
 	{
@@ -22,7 +23,30 @@ MatlabSocket::MatlabSocket() : StreamingSocket(), port(1234)
 		else
 			std::cout << "Error occured while waiting for socket!" << std::endl;
 
-		connection->write(stream, strlen(stream));
+		std::chrono::milliseconds t = std::chrono::duration_cast< std::chrono::milliseconds >(
+		std::chrono::system_clock::now().time_since_epoch());
+		long long t_s = t.count()*std::chrono::milliseconds::period::num / std::chrono::milliseconds::period::den;
+
+		int count = 0;
+		while (count < 10000)
+		{
+
+			t = std::chrono::duration_cast< std::chrono::milliseconds >(
+			std::chrono::system_clock::now().time_since_epoch());
+			long long t_n = t.count()*std::chrono::nanoseconds::period::num / std::chrono::seconds::period::den;
+
+			if (t_n > t_s)
+			{
+				count++;
+				t_s = t_n;
+				//Send 60 bytes every 1 second.
+				connection->write(stream, strlen(stream));
+				//std::cout << count <<  ": Wrote stream w/ length: " << strlen(stream) << std::endl;
+			}
+			
+		}
+		char EOM[] = "~";
+		connection->write(EOM, strlen(EOM));
 		return;
 	}
 	printf("Socket timed out!\n");
@@ -32,9 +56,7 @@ MatlabSocket::MatlabSocket() : StreamingSocket(), port(1234)
 MatlabSocket::~MatlabSocket()
 {
 	if (connection != nullptr)
-	{
 		connection->close();
-	}
 }
 
 MatlabEngine::MatlabEngine() : GenericProcessor("Matlab Engine")
@@ -107,20 +129,11 @@ void MatlabEngine::process(AudioSampleBuffer& buffer)
 		}
 	}
 
+	/*
 	matlab::data::TypedArray<float> argArray = factory.createArray({1,dataSize}, std::begin(matlab_data), std::end(matlab_data));
-
-	count++;
 	matlab->setVariable("data", std::move(argArray));
-	//matlab::data::Array results = matlab->feval("sqrt", argArray);
-/*
-	for (int chan = 0; chan < numChannels; chan++)
-	{
-		int numSamples = getNumSamples(chan);
-		int64 timestamp = getTimestamp(chan);
-
-		//Do whatever processing needed
-	}
-*/
+	matlab::data::Array results = matlab->feval("sqrt", argArray);
+	*/
 	 
 }
 

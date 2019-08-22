@@ -53,7 +53,7 @@ MatlabEngineEditor::MatlabEngineEditor(MatlabEngine* parentNode, bool useDefault
 	socketButton->addListener(this);
 	addAndMakeVisible(socketButton);
 
-	startTimer(UI_TIMER_PERIOD);
+	//startTimer(UI_TIMER_PERIOD);
 
 
 }
@@ -78,20 +78,20 @@ void MatlabEngineEditor::buttonEvent(Button* button)
 	{
 		auto startupTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::startMatlab, engine);
 		auto dispTime = std::chrono::duration<double, std::milli>(startupTime).count();
-		printf("MATLAB startup time: %1.3f [ms]\n", dispTime); fflush(stdout);
+		printf("MATLAB startup time: %1.3f [ms]\n", dispTime);
 	}
 	else if (button == testButton)
 	{
 		auto testTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::runTest, engine);
 		auto dispTime = std::chrono::duration<double, std::micro>(testTime).count();
-		printf("Run test time: %.0f [us]\n ", dispTime); fflush(stdout);
+		printf("Run test time: %.0f [us]\n ", dispTime);
 	}
 	else if (button == socketButton)
 	{
-		printf("Opening socket to MATLAB...\n");
+		std::cout << "Opening socket to MATLAB...\n" << std::endl;
 		auto openSocketTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::openSocket, engine);
 		auto dispTime = std::chrono::duration<double, std::milli>(openSocketTime).count();
-		printf("Open socket time: %0.f [ms]\n ", dispTime); fflush(stdout);
+		printf("Open socket time: %0.f [ms]\n ", dispTime); 
 	}
 }
 
@@ -99,10 +99,10 @@ void MatlabEngineEditor::runTest()
 {
 
 	/* Simulate pressing socket button */
-	std::cout << "Simulating socket button press...";
+	std::cout << "[EDITOR] Simulating socket button press..." << std::endl;
 	buttonEvent(socketButton);
-	std::cout << "Done simulating socket button press!" << std::endl;
-	
+	std::cout << "[EDITOR] Done simulating socket button press!" << std::endl;
+
 }
 
 
