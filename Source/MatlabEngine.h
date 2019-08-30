@@ -11,6 +11,10 @@
 #include <chrono>
 #include <functional>
 
+#include <algorithm>
+#include <random>
+#include <vector>
+
 #define MAX_MESSAGE_SIZE 2000
 
 template <typename Time = std::chrono::microseconds, typename Clock = std::chrono::high_resolution_clock>

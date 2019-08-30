@@ -4,7 +4,10 @@ MatlabSocket::MatlabSocket() : StreamingSocket(), port(1234)
 {
 
 	char buffer[MAX_MESSAGE_SIZE];
-	char stream[] = "TEST STREAM\n";
+
+	std::random_device random_device;
+	std::mt19937 random_engine(random_device());
+	std::uniform_int_distribution<int> distribution_1_100(1,100);
 
 	createListener(port,""); //empty string means use localhost address (127.0.0.1)
 	std::cout << "Waiting for next connection...\n" << std::endl; fflush(stdout);
@@ -28,6 +31,7 @@ MatlabSocket::MatlabSocket() : StreamingSocket(), port(1234)
 		long long t_s = t.count()*std::chrono::milliseconds::period::num / std::chrono::milliseconds::period::den;
 
 		int count = 0;
+
 		while (count < 10000)
 		{
 
@@ -40,6 +44,10 @@ MatlabSocket::MatlabSocket() : StreamingSocket(), port(1234)
 				count++;
 				t_s = t_n;
 				//Send 60 bytes every 1 second.
+				float data = static_cast<float>(distribution_1_100(random_engine));
+				snprintf(buffer, sizeof(buffer), "%f", data);
+				connection->write(buffer, strlen(buffer));
+				char stream[] = "\n";
 				connection->write(stream, strlen(stream));
 				//std::cout << count <<  ": Wrote stream w/ length: " << strlen(stream) << std::endl;
 			}
