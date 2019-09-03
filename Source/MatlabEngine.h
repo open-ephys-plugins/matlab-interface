@@ -4,10 +4,12 @@
 #include <ProcessorHeaders.h>
 #include "MatlabEngineEditor.h"
 
+#include "DataQueue.h"
+#include "SocketThread.h"
 #include "MatlabDataArray.hpp"
 #include "MatlabEngine.hpp"
-#include <iostream>
 
+#include <iostream>
 #include <chrono>
 #include <functional>
 
@@ -16,6 +18,16 @@
 #include <vector>
 
 #define MAX_MESSAGE_SIZE 2000
+
+#define WRITE_BLOCK_LENGTH		1024
+#define DATA_BUFFER_NBLOCKS		300
+#define EVENT_BUFFER_NEVENTS	512
+#define SPIKE_BUFFER_NSPIKES	512
+
+#define NIDAQ_BIT_VOLTS			0.001221f
+#define NPX_BIT_VOLTS			0.195f
+#define MAX_BUFFER_SIZE			40960
+#define CHANNELS_PER_THREAD		384
 
 template <typename Time = std::chrono::microseconds, typename Clock = std::chrono::high_resolution_clock>
 struct func_timer
@@ -54,12 +66,13 @@ public:
 	//void loadCustomParametersFromXml() override;
 
 	void updateSettings() override;
-
-	void startMatlab();
+	void start();
 	void runTest();
-	void openSocket();
 
 private:
+
+	ScopedPointer<DataQueue> dataQueue;
+	ScopedPointer<SocketThread> socketThread;
 
 	std::unique_ptr<matlab::engine::MATLABEngine> matlab;
 
@@ -69,18 +82,6 @@ private:
 
 	int count;
 
-};
-
-//A juce::StreamingSocket class optimized for streaming data to Matlab
-class MatlabSocket : public StreamingSocket
-{
-public:
-	MatlabSocket();
-	~MatlabSocket();
-private:
-	ScopedPointer<StreamingSocket> connection;
-	int port;
-	bool connected; //true if client (Matlab) has connected
 };
 
 #endif

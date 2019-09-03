@@ -76,7 +76,7 @@ void MatlabEngineEditor::buttonEvent(Button* button)
 
 	if (button == connectButton)
 	{
-		auto startupTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::startMatlab, engine);
+		auto startupTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::start, engine);
 		auto dispTime = std::chrono::duration<double, std::milli>(startupTime).count();
 		printf("MATLAB startup time: %1.3f [ms]\n", dispTime);
 	}
@@ -89,9 +89,9 @@ void MatlabEngineEditor::buttonEvent(Button* button)
 	else if (button == socketButton)
 	{
 		std::cout << "Opening socket to MATLAB...\n" << std::endl;
-		auto openSocketTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::openSocket, engine);
-		auto dispTime = std::chrono::duration<double, std::milli>(openSocketTime).count();
-		printf("Open socket time: %0.f [ms]\n ", dispTime); 
+		//auto openSocketTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::openSocket, engine);
+		//auto dispTime = std::chrono::duration<double, std::milli>(openSocketTime).count();
+		//printf("Open socket time: %0.f [ms]\n ", dispTime); 
 	}
 }
 
