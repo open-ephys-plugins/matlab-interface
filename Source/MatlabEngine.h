@@ -17,9 +17,9 @@
 #include <random>
 #include <vector>
 
-#define MAX_MESSAGE_SIZE 2000
+#define MAX_MESSAGE_SIZE 		2000
 
-#define WRITE_BLOCK_LENGTH		1024
+#define WRITE_BLOCK_LENGTH		1024	
 #define DATA_BUFFER_NBLOCKS		300
 #define EVENT_BUFFER_NEVENTS	512
 #define SPIKE_BUFFER_NSPIKES	512

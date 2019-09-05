@@ -43,7 +43,7 @@ int MatlabSocket::listen()
 
 }
 
-int MatlabSocket::writeData(int channel, const float* buffer, int size)
+int MatlabSocket::writeData(int channel, const float* buffer, int size, int idx)
 {
 
 	if (size > bufferSize)
@@ -53,8 +53,10 @@ int MatlabSocket::writeData(int channel, const float* buffer, int size)
 		bufferSize = size;
 	}
 
-	if (channel == 0)
+	if (channel == 0) //(channel == 0)
 	{
+
+		//std::cout << "Size: " << size << " dataBuffer size: " << sizeof(dataBuffer) << " idx: " << idx << std::endl;
 		
 		for (int i = 0; i < size; i++)
 		{

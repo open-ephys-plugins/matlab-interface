@@ -103,14 +103,14 @@ void SocketThread::writeData(const AudioSampleBuffer& dataBuffer, int maxSamples
 		if (idx[chan].size1 > 0)
 		{
 			//EVERY_ENGINE->writeData(chan, m_channelArray[chan], dataBuffer.getReadPointer(chan, idx[chan].index1), idx[chan].size1);
-			socket->writeData(chan, dataBuffer.getReadPointer(chan, idx[chan].index1), idx[chan].size1);
+			socket->writeData(chan, dataBuffer.getReadPointer(chan, idx[chan].index1), idx[chan].size1, 1);
 			if (idx[chan].size2 > 0)
 			{
 				timestamps.set(chan, timestamps[chan] + idx[chan].size1);
 				//EVERY_ENGINE->updateTimestamps(timestamps, chan);
 				//socket->updateTimestamps(timestamps, chan);
 				//EVERY_ENGINE->writeData(chan, m_channelArray[chan], dataBuffer.getReadPointer(chan, idx[chan].index2), idx[chan].size2);
-				socket->writeData(chan, dataBuffer.getReadPointer(chan, idx[chan].index2), idx[chan].size2);
+				socket->writeData(chan, dataBuffer.getReadPointer(chan, idx[chan].index2), idx[chan].size2, 2);
 			}
 		}
 	}

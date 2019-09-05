@@ -36,44 +36,55 @@ classdef OEClient < handle
             plotTitle = 'Open Ephys Data Stream';
             xLabel = 'Sample Count';
             yLabel = 'Voltage [V]';
+            x_axis_size = 30000;
             
-            time = 0;
-            data = 0;
-            count = 0;
-            
-            inputLineSize = 100;
-            
-            clf; cla; drawnow; 
-            plotGraph = plot(time, data);
-            hold on;
+            clf; cla; plotGraph = plot(0,0); drawnow; hold on;
             title(plotTitle, 'FontSize', 16);
             xlabel(xLabel, 'FontSize', 12);
             ylabel(yLabel, 'FontSize', 12);
-            xlim([0,100*inputLineSize]); ylim([0, 5]);
+            xlim([0,x_axis_size]); ylim([-50, 50]);
 
             inputLine = self.buffered_reader.readLine; %waits for data stream
          
             t = tic;
+            
+            lastIdx = 0;
          
             while ishandle(plotGraph)
                 
-                %time(count) = count;
-                %data(count) = str2double(self.buffered_reader.readLine);
-                %set(plotGraph, 'Xdata', time, 'YData', data);
-                %axis([0 time(count) yMin yMax]);
-                %pause(delay);
-                %fprintf("%d: %f\n", count, str2double(inputLine));
+                %Get data from socket
                 inputLine = str2num(self.buffered_reader.readLine);
-                %data(count) = str2double(inputLine);
-                if (length(inputLine) == inputLineSize)
-                    plotGraph = plot((1+inputLineSize*count):(inputLineSize*(count+1)), inputLine); drawnow; 
-                    set(plotGraph, 'XData', (1+inputLineSize*count):(inputLineSize*(count+1)), 'YData', inputLine);
-                    count = count + 1;
+                numSamples = length(inputLine);
+                
+                %Compute some basic stats
+                minV = min(inputLine);
+                maxV = max(inputLine);
+                avgV = mean(inputLine);
+                
+                fprintf("Min: %1.2f Max: %1.2f Avg: %1.2f\n", minV, maxV, avgV);
+
+                %Pre-process for plotting
+                if (lastIdx + numSamples) > x_axis_size
+                    xData = lastIdx:x_axis_size;
+                    yData = inputLine(1:(x_axis_size - lastIdx));
                 else
-                    fprintf("Skipping because input length is: %d\n", length(inputLine));
+                    xData = (lastIdx+1):(lastIdx+numSamples);
+                    yData = inputLine;
                 end
-                if count > inputLineSize
-                    count = 0;
+
+                %Plot
+                try 
+                    plotGraph = plot(xData, yData); drawnow; 
+                    set(plotGraph, 'XData', xData, 'YData', yData);
+                catch
+                    fprintf("xDataSize: %d, yDataSize: %d\n", length(xData), length(yData));
+                end
+                
+                %Reset if needed
+                lastIdx = lastIdx + numSamples;
+                if lastIdx > x_axis_size
+                    fprintf("Resetting: lastIdx: %d\n", lastIdx);
+                    lastIdx = 0;
                     cla; plotGraph = plot(0,0); drawnow; 
                 end
                 
