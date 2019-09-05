@@ -3,7 +3,7 @@
 # 1. intermediate files
 *.o
 *.d
-
+*.asv
 
 # 2. Build files
 
