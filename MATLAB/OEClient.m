@@ -10,6 +10,8 @@ classdef OEClient < handle
         connected;
         socket;
         in_stream;
+        out_stream;
+        stream_writer;
         stream_reader;
         buffered_reader;
         eom;
@@ -36,7 +38,7 @@ classdef OEClient < handle
             plotTitle = 'Open Ephys Data Stream';
             xLabel = 'Sample Count';
             yLabel = 'Voltage [V]';
-            x_axis_size = 30000;
+            x_axis_size = 5000;
             
             clf; cla; plotGraph = plot(0,0); drawnow; hold on;
             title(plotTitle, 'FontSize', 16);
@@ -47,11 +49,16 @@ classdef OEClient < handle
             inputLine = self.buffered_reader.readLine; %waits for data stream
          
             t = tic;
-            
+            count = 0;
             lastIdx = 0;
             firstData = 0;
+            
+            self.stream_writer.writeBytes('Testing\n');
+            self.stream_writer.flush;
          
             while ishandle(plotGraph)
+                
+                count = count + 1;
                 
                 %Get data from socket
                 inputLine = str2num(self.buffered_reader.readLine);
@@ -75,7 +82,7 @@ classdef OEClient < handle
                     end
                 end
                 
-                fprintf("Min: %1.2f Max: %1.2f Avg: %1.2f\n", minV, maxV, avgV);
+                %fprintf("Min: %1.2f Max: %1.2f Avg: %1.2f\n", minV, maxV, avgV);
 
                 %Pre-process for plotting
                 if (lastIdx + numSamples) > x_axis_size
@@ -91,7 +98,7 @@ classdef OEClient < handle
                     plotGraph = plot(xData, yData); drawnow; 
                     set(plotGraph, 'XData', xData, 'YData', yData);
                 catch
-                    fprintf("xDataSize: %d, yDataSize: %d\n", length(xData), length(yData));
+                    %fprintf("xDataSize: %d, yDataSize: %d\n", length(xData), length(yData));
                 end
                 
                 %Reset if needed
@@ -102,10 +109,40 @@ classdef OEClient < handle
                     cla; plotGraph = plot(0,0); drawnow; 
                 end
                 
+                %Check if any requests were made...
+                %fprintf('Writing data to OE...\n');
+                self.stream_writer.writeBytes('Test!');
+                self.stream_writer.flush;
+                
+                if mod(count, 250) == 0
+                    self.stream_writer.writeBytes('Stop!');
+                    self.stream_writer.flush;
+                    fprintf("Elapsed time: %1.2f\n" , toc(t));
+                end
+                
             end
             
             fprintf("Elapsed time: %d\n" , int8(toc(t)));
             
+        end
+
+        function [self, data] = fetch(self)
+
+            readLine = self.buffered_reader.readLine;
+
+            %TODO: Parse readLine in a way that we can differentiate between continous and event data...
+
+        end
+
+        function self = write(self, message)
+
+            %TODO: Check if message is a valid char and proper length
+
+            if (length(message) == WRITE_MSG_SIZE)
+                self.stream_writer.writeBytes(message);
+                self.stream_writer.flush;
+            end
+
         end
         
         function self = connect(self, host, port)
@@ -116,18 +153,21 @@ classdef OEClient < handle
             
             try
                 self.socket = Socket(host, port);
+                fprintf("Created a new socket on %s:%d\n", self.host, self.port);
+                self.connected = 1;
+                self.in_stream = self.socket.getInputStream;
+                fprintf("Created input stream...\n");
+                self.out_stream = self.socket.getOutputStream;
+                fprintf("Created output stream...\n");
+                self.stream_writer = DataOutputStream(self.out_stream);
+                fprintf("Created output stream writer...\n");
+                self.stream_reader = InputStreamReader(self.in_stream);
+                fprintf("Created input stream reader...\n");
+                self.buffered_reader = BufferedReader(self.stream_reader);
+                fprintf("Created buffered reader...\n");
             catch 
                 fprintf("Connecting...\n");
             end
-            
-            fprintf("Created a new socket on %s:%d\n", self.host, self.port);
-            self.connected = 1;
-            self.in_stream = self.socket.getInputStream;
-            fprintf("Created input stream...\n");
-            self.stream_reader = InputStreamReader(self.in_stream);
-            fprintf("Created input stream reader...\n");
-            self.buffered_reader = BufferedReader(self.stream_reader);
-            fprintf("Created buffered reader...\n");
            
         end
         

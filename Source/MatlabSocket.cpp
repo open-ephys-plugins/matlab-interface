@@ -1,4 +1,5 @@
 #include "MatlabSocket.h"
+#include "../../Source/CoreServices.h"
 
 MatlabSocket::MatlabSocket() : StreamingSocket(), port(1234)
 {
@@ -60,11 +61,19 @@ int MatlabSocket::writeData(int channel, const float* buffer, int size, int idx)
 		
 		for (int i = 0; i < size; i++)
 		{
-			snprintf(dataBuffer, sizeof(dataBuffer), "%f", *(buffer+i));
-			connection->write(dataBuffer, strlen(dataBuffer));
+			snprintf(writeBuffer, sizeof(writeBuffer), "%f", *(buffer+i));
+			connection->write(writeBuffer, strlen(writeBuffer));
 			connection->write(" ",strlen(" "));
 		}
 		connection->write("\n", strlen("\n"));
+
+		bool blockUntilSpecifiedAmountHasArrived = false;
+		std::cout << "Waiting to receive data..." << std::endl; fflush(stdout);
+ 		connection->read(readBuffer, 5, blockUntilSpecifiedAmountHasArrived);
+		std::cout << "Received: " << readBuffer << std::endl;
+
+		if (String(readBuffer) == "Stop!")
+			CoreServices::setAcquisitionStatus(false);
 
 	}
 

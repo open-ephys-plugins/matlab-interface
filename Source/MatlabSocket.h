@@ -15,5 +15,6 @@ private:
 	ScopedPointer<StreamingSocket> connection;
 	int port;
 	bool connected; //true if client (Matlab) has connected
-	char dataBuffer[MAX_BUFFER_SIZE];
+	char writeBuffer[MAX_BUFFER_SIZE];
+	char readBuffer[5];
 };
