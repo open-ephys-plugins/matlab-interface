@@ -49,6 +49,7 @@ classdef OEClient < handle
             t = tic;
             
             lastIdx = 0;
+            firstData = 0;
          
             while ishandle(plotGraph)
                 
@@ -56,10 +57,23 @@ classdef OEClient < handle
                 inputLine = str2num(self.buffered_reader.readLine);
                 numSamples = length(inputLine);
                 
-                %Compute some basic stats
-                minV = min(inputLine);
-                maxV = max(inputLine);
-                avgV = mean(inputLine);
+                %Dynamically size the y-axis to fit the data
+                if ~firstData
+                    minV = min(inputLine);
+                    maxV = max(inputLine);
+                    avgV = mean(inputLine);
+                    ylim([minV, maxV]);
+                    firstData = 1;
+                else
+                    if min(inputLine) < minV
+                       minV = min(inputLine);
+                       ylim([minV, maxV]);
+                    end
+                    if max(inputLine) > maxV
+                       maxV = max(inputLine);
+                       ylim([minV, maxV]);
+                    end
+                end
                 
                 fprintf("Min: %1.2f Max: %1.2f Avg: %1.2f\n", minV, maxV, avgV);
 
