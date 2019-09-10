@@ -50,10 +50,14 @@ public:
 	const AudioSampleBuffer& getAudioBufferReference() const;
 	void stopRead();
 
+	int getSampleRate();
+	int getNumChannels();
+
 private:
 	void fillTimestamps(int channel, int index, int size, int64 timestamp);
 
 	int lastIdx;
+	int sample_rate;
 
 	OwnedArray<AbstractFifo> m_fifos;
 	AudioSampleBuffer m_buffer;

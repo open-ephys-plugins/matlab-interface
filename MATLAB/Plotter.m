@@ -1,40 +1,84 @@
 classdef Plotter < GenericProcessor
+	% Plotter An example of a sink processor that displays the incoming data in a plot.
+	%	This processor will continuously plot the incoming data until the figure is closed. 
+	%
+	% Plotter Properties
+	%	hPlot - The handle to the plot
 
 	properties
 		hPlot;
-	end
+    end
+    
+    properties
+        xAxisRange;
+        yAxisRange;
+    end
 
-	properties
-		lastIdx;
-		firstData;
-	end
+    methods 
 
-	methods
-
-		function self = Plotter(plotTitle, xLabel, yLabel, xLim, yLim)
-
-			self = self@GenericProcessor();
+    	function self = Plotter(host, port)
+            
+            self = self@GenericProcessor(host, port);
+            
+            self.xAxisRange = [0,10000];
+            self.yAxisRange = [0,10];
+            
+            plotTitle = 'Open Ephys Data Stream';
+            xLabel = 'Sample Count';
+            yLabel = 'Voltage [uV]';
 
 			clf; cla; 
 			self.hPlot = plot(0,0); drawnow; hold on;
 			title(plotTitle);
 			xlabel(xLabel); ylabel(yLabel);
-			xlim([0,xLim]); ylim([yLim(1), yLim(2)]);
-			
-			lastIdx = 0;
-			firstData = 0;
-
+			xlim(self.xAxisRange); ylim(self.yAxisRange);
+            
 			self.process();
 
 		end
 
+    end
+
+	methods (Access = protected)
+
 		function process(self)
+            
+			lastSample = 0;
+            xAxisSize = self.xAxisRange(2);
+            
+			while ishandle(self.hPlot) 
 
-			while ishandle(self.hPlot) %define a condition to keep processing...could simply be while(1)
+				process@GenericProcessor(self); %This refreshes the data buffer
 
-				process@GenericProcessor(self); %gets data from open-ephys client
+				numSamples = self.data.numSamplesFetched;
+                fprintf("Fetched %d samples\n", numSamples);
+
+				if lastSample + numSamples > xAxisSize
+					xData = lastSample:xAxisSize;
+					yData = self.data.continuous(1:(xAxisSize-lastSample));
+				else
+					xData = (lastSample+1):(lastSample+numSamples);
+					yData = self.data.continuous;
+				end
+
+				try 
+					self.hPlot = plot(xData,yData); drawnow;
+					set(self.hPlot, 'XData', xData, 'YData', yData); 
+                    fprintf("Length of data: %d:%d\n", length(xData), length(yData));
+				catch
+					fprintf('X and Y data do not have same length!\n');
+				end
+
+				lastSample = lastSample + numSamples;
+                if lastSample > xAxisSize
+                    fprintf('Resetting plot...\n');
+                    lastSample = 0;
+                    cla; self.hPlot = plot(0,0); drawnow; 
+                end
 
 			end
+
+			fprintf('Plot window was deleted, exiting Plotter::process() method...\n');
 
 		end
 

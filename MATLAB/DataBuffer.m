@@ -1,9 +1,10 @@
 classdef DataBuffer < handle
 
 	properties
-		sample_rate;
-		continous;
-		event;
+		sampleRate;				%Sample rate of the incoming data
+		numSamplesFetched;		%Number of samples acquired from most recent fetch
+		continuous;				%CxN array holding C channels of N samples
+		event;					%ExN array holding E channels of N binary samples
 	end
 
 	properties (Constant)
@@ -12,10 +13,11 @@ classdef DataBuffer < handle
 
 	methods
 
-		function self = DataBuffer(nContinousChannels, nEventChannels)
+		function self = DataBuffer(client)
 
-			continous = containers.Map;
-			event = containers.Map;
+			%Parse client header and setup data structures...
+			self.continuous = [];
+			self.event = [];
 
 		end
 

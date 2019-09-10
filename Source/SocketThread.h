@@ -55,6 +55,7 @@ public:
 	//TODO: endChannelBlock;
 
 private:
+	void writeHeader();
 	void writeData(const AudioSampleBuffer& buffer, int maxSamples, int maxEvents, int maxSpikes, bool lastBlock = false);
 
 	ScopedPointer<MatlabSocket> socket;

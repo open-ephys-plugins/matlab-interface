@@ -9,8 +9,10 @@ public:
 	MatlabSocket();
 	~MatlabSocket();
 	int listen();
+	int writeHeader();
 	int writeData(int channel, const float* buffer, int size, int idx);
 private:
+	bool sentHeader;
 	int bufferSize;
 	ScopedPointer<StreamingSocket> connection;
 	int port;

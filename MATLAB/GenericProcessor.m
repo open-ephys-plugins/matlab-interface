@@ -1,7 +1,7 @@
 classdef GenericProcessor < handle
 
-	properties
-		oeClient;
+	properties (Access = protected)
+		client;
 		data;
 	end
 
@@ -9,9 +9,9 @@ classdef GenericProcessor < handle
 
 		function self = GenericProcessor(host, port)
 
-			self.oeClient = OEClient(host, port);
-			self.data = DataBuffer();
-
+			self.client = OEClient(host, port);
+			self.data 	= DataBuffer(self.client);
+            
 		end
 
 	end
@@ -19,23 +19,30 @@ classdef GenericProcessor < handle
 	methods (Access = protected)
 
 		function process(self)
-			self.data = oeClient.fetch();
+			%Fetch the raw data and organize it into the DataBuffer
+            self.client.write('Test!');
+			self.data.continuous = str2num(self.client.read()); %#ok<*ST2NM>
+			self.data.numSamplesFetched = length(self.data.continuous);
 		end
 
 		function sendHandshake(self)
-			self.oeClient.sendHandshake();
+			self.client.sendHandshake();
 		end
 
 		function startAcquisition(self)
-			self.oeClient.startAcquisition();
+			self.client.startAcquisition();
+		end
+
+		function updateChannels(self, channels)
+			self.client.updateChannels(channels);
 		end
 
 		function stopAcquisition(self)
-			self.oeClient.stopAcquisition();
+			self.client.stopAcquisition();
 		end
 
 		function disconnect(self)
-			self.oeClient.disconnect();
+			self.client.disconnect();
 		end
 
 	end

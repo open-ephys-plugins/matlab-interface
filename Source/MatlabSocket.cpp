@@ -4,7 +4,7 @@
 MatlabSocket::MatlabSocket() : StreamingSocket(), port(1234)
 {
 	bufferSize = MAX_BUFFER_SIZE;
-
+	sentHeader = false;
 }
 
 MatlabSocket::~MatlabSocket()
@@ -44,6 +44,13 @@ int MatlabSocket::listen()
 
 }
 
+int MatlabSocket::writeHeader()
+{
+
+
+	return 1;
+}
+
 int MatlabSocket::writeData(int channel, const float* buffer, int size, int idx)
 {
 
@@ -56,8 +63,6 @@ int MatlabSocket::writeData(int channel, const float* buffer, int size, int idx)
 
 	if (channel == 0) //(channel == 0)
 	{
-
-		//std::cout << "Size: " << size << " dataBuffer size: " << sizeof(dataBuffer) << " idx: " << idx << std::endl;
 		
 		for (int i = 0; i < size; i++)
 		{

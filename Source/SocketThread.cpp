@@ -30,6 +30,7 @@ m_cleanExit(true)
 {
 	socket = new MatlabSocket();
  	socket->listen();
+ 	socket->writeHeader();
 }
 
 SocketThread::~SocketThread()
@@ -58,18 +59,6 @@ void SocketThread::run()
 		printf("\rWaiting for first block..."); fflush(stdout);
 		wait(1);
 	}
-
-	//2-Open Files 
-	/*
-	if (!threadShouldExit())
-	{
-		m_cleanExit = false;
-		closeEarly = false;
-		Array<int64> timestamps;
-		m_dataQueue->getTimestampsForBlock(0, timestamps);
-		//socket->updateTimestamps(timestamps);
-	}
-	*/
 
 	//3-Normal loop
 	while (!threadShouldExit())

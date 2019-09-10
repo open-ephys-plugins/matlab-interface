@@ -57,6 +57,16 @@ void DataQueue::setChannels(int nChans)
 	m_buffer.setSize(nChans, m_maxSize);
 }
 
+int DataQueue::getNumChannels()
+{
+	return m_numChans;
+}
+
+int DataQueue::getSampleRate()
+{
+	return sample_rate;
+}
+
 void DataQueue::resize(int nBlocks)
 {
 	if (m_readInProgress)
