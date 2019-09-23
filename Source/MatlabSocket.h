@@ -1,6 +1,7 @@
 #include <JuceHeader.h>
 
-#define MAX_BUFFER_SIZE 40960
+#define WRITE_BUFFER_SIZE 40960
+#define READ_BUFFER_SIZE 4096
 
 //A juce::StreamingSocket class optimized for streaming data to Matlab
 class MatlabSocket : public StreamingSocket
@@ -17,6 +18,6 @@ private:
 	ScopedPointer<StreamingSocket> connection;
 	int port;
 	bool connected; //true if client (Matlab) has connected
-	char writeBuffer[MAX_BUFFER_SIZE];
-	char readBuffer[5];
+	char writeBuffer[WRITE_BUFFER_SIZE];
+	char readBuffer[READ_BUFFER_SIZE];
 };

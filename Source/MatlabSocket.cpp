@@ -3,7 +3,7 @@
 
 MatlabSocket::MatlabSocket() : StreamingSocket(), port(1234)
 {
-	bufferSize = MAX_BUFFER_SIZE;
+	bufferSize = WRITE_BUFFER_SIZE;
 	sentHeader = false;
 }
 
@@ -74,8 +74,12 @@ int MatlabSocket::writeData(int channel, const float* buffer, int size, int idx)
 
 		bool blockUntilSpecifiedAmountHasArrived = false;
 		std::cout << "Waiting to receive data..." << std::endl; fflush(stdout);
- 		connection->read(readBuffer, 5, blockUntilSpecifiedAmountHasArrived);
-		std::cout << "Received: " << readBuffer << std::endl;
+ 		connection->read(readBuffer, READ_BUFFER_SIZE, blockUntilSpecifiedAmountHasArrived);
+
+		//Parse read buffer: You know if you see 2 space characters in a row, the rest will be spaces...
+
+
+
 
 		if (String(readBuffer) == "Stop!")
 			CoreServices::setAcquisitionStatus(false);

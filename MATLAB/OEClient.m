@@ -23,7 +23,7 @@ classdef OEClient < handle
     properties (Constant)
         END_OF_MESSAGE = '~';
         MAX_CONNECT_ATTEMPTS = 5;
-        WRITE_MSG_SIZE = 5;
+        WRITE_MSG_SIZE_IN_BYTES = 40960;
     end
 
     methods
@@ -54,11 +54,16 @@ classdef OEClient < handle
         end
 
         function self = write(self, message)
-
-            %TODO: Check if message is a valid char and proper length
-
-            if (length(message) == self.WRITE_MSG_SIZE)
+            
+            fprintf("Size of msg: %d\n", length(message));
+            fprintf("Message: %s\n", message);
+   
+            if (length(message)/2 == self.WRITE_MSG_SIZE_IN_BYTES)
                 self.stream_writer.writeBytes(message);
+                self.stream_writer.flush;
+            else
+                msg_pad = blanks(self.WRITE_MSG_SIZE_IN_BYTES - 2*length(message));
+                self.stream_writer.writeBytes([message msg_pad]);
                 self.stream_writer.flush;
             end
 

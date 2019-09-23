@@ -2,7 +2,8 @@ classdef GenericProcessor < handle
 
 	properties (Access = protected)
 		client;
-		data;
+		dataIn;
+        dataOut;
 	end
 
 	methods
@@ -10,7 +11,8 @@ classdef GenericProcessor < handle
 		function self = GenericProcessor(host, port)
 
 			self.client = OEClient(host, port);
-			self.data 	= DataBuffer(self.client);
+			self.dataIn = DataBuffer(self.client);
+            self.dataOut = ['Test!' blanks(self.client.WRITE_MSG_SIZE_IN_BYTES/2-5)];
             
 		end
 
@@ -19,10 +21,9 @@ classdef GenericProcessor < handle
 	methods (Access = protected)
 
 		function process(self)
-			%Fetch the raw data and organize it into the DataBuffer
-            self.client.write('Test!');
-			self.data.continuous = str2num(self.client.read()); %#ok<*ST2NM>
-			self.data.numSamplesFetched = length(self.data.continuous);
+            self.client.write(self.dataOut);
+			self.dataIn.continuous = str2num(self.client.read()); %#ok<*ST2NM>
+			self.dataIn.numSamplesFetched = length(self.dataIn.continuous);
 		end
 
 		function sendHandshake(self)
