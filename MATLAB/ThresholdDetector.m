@@ -12,7 +12,7 @@ classdef ThresholdDetector < GenericProcessor
             
             self = self@GenericProcessor(host, port);
             
-            self.thresholdValue = 1.5; %V
+            self.thresholdValue = 3.2; %V
             
 			self.process();
 
@@ -28,7 +28,7 @@ classdef ThresholdDetector < GenericProcessor
                 
                 process@GenericProcessor(self); 
                 k = find(self.dataIn.continuous > self.thresholdValue);
-                self.dataOut = num2str(k);
+                self.dataOut = sprintf('%d ', k);
                 
             end
 

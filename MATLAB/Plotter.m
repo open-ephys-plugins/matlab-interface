@@ -20,7 +20,7 @@ classdef Plotter < GenericProcessor
             
             self = self@GenericProcessor(host, port);
             
-            self.xAxisRange = [0,10000];
+            self.xAxisRange = [0,5000];
             self.yAxisRange = [-1,4];
             
             plotTitle = 'Open Ephys Data Stream';
@@ -51,7 +51,7 @@ classdef Plotter < GenericProcessor
 				process@GenericProcessor(self); %This refreshes the data buffer
 
 				numSamples = self.dataIn.numSamplesFetched;
-                fprintf("Fetched %d samples\n", numSamples);
+                %fprintf("Fetched %d samples\n", numSamples);
 
 				if lastSample + numSamples > xAxisSize
 					xData = lastSample:xAxisSize;
@@ -69,14 +69,14 @@ classdef Plotter < GenericProcessor
                         line([xd(1)+k(ii), xd(1)+k(ii)], self.yAxisRange,'Color',[1 0 0]); 
                     end  
                     set(self.hPlot, 'Xdata', xd, 'YData', yd);
-                    fprintf("Length of data: %d:%d\n", length(xData), length(yData));
+                    %fprintf("Length of data: %d:%d\n", length(xData), length(yData));
 				catch
-					fprintf('X and Y data do not have same length!\n');
+					%fprintf('X and Y data do not have same length!\n');
 				end
 
 				lastSample = lastSample + numSamples;
                 if lastSample > xAxisSize
-                    fprintf('Resetting plot...\n');
+                    %fprintf('Resetting plot...\n');
                     lastSample = 0;
                     cla; self.hPlot = plot(0,0); drawnow; 
                 end

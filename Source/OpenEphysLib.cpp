@@ -49,7 +49,7 @@ extern "C" EXPORT int getPluginInfo(int index, Plugin::PluginInfo* info)
 	case 0:
 		info->type = PluginType::PLUGIN_TYPE_PROCESSOR;
 		info->processor.name = "MatlabEngine"; 
-		info->processor.type = Plugin::SinkProcessor;
+		info->processor.type = Plugin::FilterProcessor;
 		info->processor.creator = &(Plugin::createProcessor<MatlabEngine>);
 		break;
 	default:

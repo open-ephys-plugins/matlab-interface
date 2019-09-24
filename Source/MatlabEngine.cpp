@@ -5,7 +5,7 @@ MatlabEngine::MatlabEngine()
 	dataQueue(new DataQueue(WRITE_BLOCK_LENGTH, DATA_BUFFER_NBLOCKS)),
 	socketThread(new SocketThread())
 {
-	setProcessorType(PROCESSOR_TYPE_SINK);
+	setProcessorType(PROCESSOR_TYPE_FILTER);
 }
 
 MatlabEngine::~MatlabEngine()

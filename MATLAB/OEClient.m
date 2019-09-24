@@ -23,7 +23,7 @@ classdef OEClient < handle
     properties (Constant)
         END_OF_MESSAGE = '~';
         MAX_CONNECT_ATTEMPTS = 5;
-        WRITE_MSG_SIZE_IN_BYTES = 40960;
+        WRITE_MSG_SIZE_IN_BYTES = 1024;
     end
 
     methods

@@ -29,7 +29,7 @@ classdef PeakDetector < GenericProcessor
                 
                 yd = diff(self.dataIn.continuous)./diff(1:self.dataIn.numSamplesFetched);
                 k = find(~yd);
-                self.dataOut = num2str(k);
+                self.dataOut = sprintf('%d ', k);
                 
             end
 
