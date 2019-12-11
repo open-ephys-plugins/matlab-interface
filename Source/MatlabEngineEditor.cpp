@@ -34,28 +34,37 @@ MatlabEngineEditor::MatlabEngineEditor(MatlabEngine* parentNode, bool useDefault
 
 	desiredWidth = 150;
 
+	hostLabel = new Label("HostLabel", "Host:");
+	hostLabel->setBounds(10, 25, 50, 20);
+	addAndMakeVisible(hostLabel);
+
+	hostEntry = new Label("HostEntry", "127.0.0.1");
+	hostEntry->setEditable(true);
+	hostEntry->setBounds(60, 25, 75, 20);
+	addAndMakeVisible(hostEntry);
+
+	portLabel = new Label("PortLabel", "Port:");
+	portLabel->setBounds(10, 50, 50, 20);
+	addAndMakeVisible(portLabel);
+
+	portEntry = new Label("PortEntry", "1234");
+	portEntry->setEditable(true);
+	portEntry->setBounds(60, 50, 75, 20);
+	addAndMakeVisible(portEntry);
+
 	connectButton = new UtilityButton("CONNECT", Font("Small Text", 13, Font::bold));
 	connectButton->setRadius(3.0f);
-	connectButton->setBounds(10, 25, 65, 25);
+	connectButton->setBounds(20, 75, 100, 20);
 	connectButton->addListener(this);
 	addAndMakeVisible(connectButton);
 
+	channelLabel = new Label("ChannelLabel", "Channel:");
+	channelLabel->setBounds(10, 100, 70, 20);
+	addAndMakeVisible(channelLabel);
 
-	testButton = new UtilityButton("RUN TEST", Font("Small Text", 13, Font::bold));
-	testButton->setRadius(3.0f);
-	testButton->setBounds(10, 55, 65, 25);
-	testButton->addListener(this);
-	addAndMakeVisible(testButton);
-
-	socketButton = new UtilityButton("OPEN SOCKET", Font("Small Text", 13, Font::bold));
-	socketButton->setRadius(3.0f);
-	socketButton->setBounds(10, 85, 100, 25);
-	socketButton->addListener(this);
-	addAndMakeVisible(socketButton);
-
-	//startTimer(UI_TIMER_PERIOD);
-
-
+	channelSelect = new ComboBox("ChannelSelect");
+	channelSelect->setBounds(80, 100, 50, 20);
+	addAndMakeVisible(channelSelect);
 }
 
 MatlabEngineEditor::~MatlabEngineEditor()
@@ -66,43 +75,19 @@ MatlabEngineEditor::~MatlabEngineEditor()
 void MatlabEngineEditor::timerCallback()
 {
 
-	runTest();
 	stopTimer();
 
 }
 
 void MatlabEngineEditor::buttonEvent(Button* button)
 {
-
-	if (button == connectButton)
-	{
-		auto startupTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::start, engine);
-		auto dispTime = std::chrono::duration<double, std::milli>(startupTime).count();
-		printf("MATLAB startup time: %1.3f [ms]\n", dispTime);
-	}
-	else if (button == testButton)
-	{
-		auto testTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::runTest, engine);
-		auto dispTime = std::chrono::duration<double, std::micro>(testTime).count();
-		printf("Run test time: %.0f [us]\n ", dispTime);
-	}
-	else if (button == socketButton)
-	{
-		std::cout << "Opening socket to MATLAB...\n" << std::endl;
-		//auto openSocketTime = func_timer<std::chrono::milliseconds>::duration(&MatlabEngine::openSocket, engine);
-		//auto dispTime = std::chrono::duration<double, std::milli>(openSocketTime).count();
-		//printf("Open socket time: %0.f [ms]\n ", dispTime); 
-	}
 }
 
-void MatlabEngineEditor::runTest()
+
+void MatlabEngineEditor::comboBoxChanged(ComboBox *combo)
 {
-
-	/* Simulate pressing socket button */
-	std::cout << "[EDITOR] Simulating socket button press..." << std::endl;
-	buttonEvent(socketButton);
-	std::cout << "[EDITOR] Done simulating socket button press!" << std::endl;
-
+	CoreServices::updateSignalChain(this);
 }
+
 
 

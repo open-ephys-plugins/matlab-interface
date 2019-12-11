@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class MatlabEngine;
 
-class MatlabEngineEditor : public GenericEditor
+class MatlabEngineEditor : public GenericEditor, public ComboBoxListener
 {
 public:
 
@@ -41,18 +41,20 @@ public:
 	void timerCallback();
 
 	void buttonEvent(Button* button);
-
-	void runTest();
-
+	void comboBoxChanged(ComboBox* combo);
 
 private:
 
 	MatlabEngine* engine;
 
 	//Define UI Elements here...
+	ScopedPointer<Label> hostLabel;
+	ScopedPointer<Label> hostEntry;
+	ScopedPointer<Label> portLabel;
+	ScopedPointer<Label> portEntry;
 	ScopedPointer<UtilityButton> connectButton;
-	ScopedPointer<UtilityButton> testButton;
-	ScopedPointer<UtilityButton> socketButton;
+	ScopedPointer<Label> channelLabel;
+	ScopedPointer<ComboBox> channelSelect;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MatlabEngineEditor);
 

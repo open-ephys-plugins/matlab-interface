@@ -28,9 +28,9 @@ Thread("Socket Thread"),
 m_receivedFirstBlock(false),
 m_cleanExit(true)
 {
-	socket = new MatlabSocket();
- 	socket->listen();
- 	socket->writeHeader();
+	//socket = new MatlabSocket();
+ 	//socket->listen();
+ 	//socket->writeHeader();
 }
 
 SocketThread::~SocketThread()
