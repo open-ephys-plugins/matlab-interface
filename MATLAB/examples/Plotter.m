@@ -53,20 +53,17 @@ classdef Plotter < GenericProcessor
 				numSamples = self.dataIn.numSamplesFetched;
 
 				if lastSample + numSamples > xAxisSize
-					xData = lastSample:xAxisSize;
+					xData = (lastSample+1):xAxisSize;
 					yData = self.dataIn.continuous(1:(xAxisSize-lastSample));
 				else
 					xData = (lastSample+1):(lastSample+numSamples);
 					yData = self.dataIn.continuous;
 				end
 
-				try 
-					self.hPlot = plot(xData,yData); drawnow;
-					set(self.hPlot, 'XData', xData, 'YData', yData); 
-				catch
-					fprintf('X and Y data do not have same length!\n');
-				end
+				self.hPlot = plot(xData,yData); drawnow;
+				set(self.hPlot, 'XData', xData, 'YData', yData); 
 
+				%TODO: Currently ignores (doesn't plot) samples that overshoot x-axis range
 				lastSample = lastSample + numSamples;
                 if lastSample > xAxisSize
                     lastSample = 0;
