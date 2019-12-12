@@ -41,11 +41,11 @@ classdef ArduinoDriver < GenericProcessor
                 
                 %Check the ratio and send a TTL if above threshold
                 if (delta_pwr / theta_pwr) > self.ratio_threshold
-                    if ~self.ttl_value
-                        writeDigitalPin(self.arduino, self.ttl_pin, 1);
-                        self.timer = tic;
-                    end
-                else
+                    writeDigitalPin(self.arduino, self.ttl_pin, 1);
+                    self.timer = tic;
+                elseif toc(self.timer) > self.ttl_on_time
+                    %Set TTL low if no threshold and TTL has been high long
+                    %enough
                     if toc(self.timer) > self.ttl_on_time
                         writeDigitalPin(self.arduino, self.ttl_pin, 0);
                     end
