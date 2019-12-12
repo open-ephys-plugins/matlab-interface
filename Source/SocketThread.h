@@ -47,7 +47,7 @@ public:
 	void setQueuePointers(DataQueue* data);
 	void setSelectedChannel(int channel);
 
-	int openSocket(); 
+	int openSocket(int port, String host); 
 
 	void run() override;
 

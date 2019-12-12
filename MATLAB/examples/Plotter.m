@@ -48,10 +48,9 @@ classdef Plotter < GenericProcessor
             
 			while ishandle(self.hPlot) 
 
-				process@GenericProcessor(self); %This refreshes the data buffer
+				process@GenericProcessor(self); 
 
 				numSamples = self.dataIn.numSamplesFetched;
-                %fprintf("Fetched %d samples\n", numSamples);
 
 				if lastSample + numSamples > xAxisSize
 					xData = lastSample:xAxisSize;
@@ -64,26 +63,17 @@ classdef Plotter < GenericProcessor
 				try 
 					self.hPlot = plot(xData,yData); drawnow;
 					set(self.hPlot, 'XData', xData, 'YData', yData); 
-                    self.hPlot = plot(xd,yd); drawnow;
-                    for ii = 1:length(k)
-                        line([xd(1)+k(ii), xd(1)+k(ii)], self.yAxisRange,'Color',[1 0 0]); 
-                    end  
-                    set(self.hPlot, 'Xdata', xd, 'YData', yd);
-                    %fprintf("Length of data: %d:%d\n", length(xData), length(yData));
 				catch
-					%fprintf('X and Y data do not have same length!\n');
+					fprintf('X and Y data do not have same length!\n');
 				end
 
 				lastSample = lastSample + numSamples;
                 if lastSample > xAxisSize
-                    %fprintf('Resetting plot...\n');
                     lastSample = 0;
                     cla; self.hPlot = plot(0,0); drawnow; 
                 end
 
-			end
-
-			fprintf('Plot window was deleted, exiting Plotter::process() method...\n');
+            end
 
 		end
 

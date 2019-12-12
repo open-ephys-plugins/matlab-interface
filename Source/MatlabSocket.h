@@ -11,7 +11,7 @@ class MatlabSocket : public StreamingSocket
 public:
 	MatlabSocket();
 	~MatlabSocket();
-	int listen();
+	int listen(int port, String host);
 	int writeHeader();
 	int writeData(int channel, const float* buffer, int size, int idx);
 	int readData();

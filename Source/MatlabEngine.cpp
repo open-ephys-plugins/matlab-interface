@@ -13,9 +13,10 @@ MatlabEngine::~MatlabEngine()
 
 }
 
-int MatlabEngine::connect()
+int MatlabEngine::connect(String port, String host)
 {
-	return socketThread->openSocket();
+	//TODO: Basic host and port error checking
+	return socketThread->openSocket(port.getIntValue(), host);
 }
 
 void MatlabEngine::setSelectedChannel(int channel)

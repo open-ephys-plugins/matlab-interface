@@ -45,9 +45,10 @@ void SocketThread::setSelectedChannel(int channel)
 	socket->selectedChannel = channel;
 }
 
-int SocketThread::openSocket()
+int SocketThread::openSocket(int port, String host)
 {
-	socket->listen();
+
+	socket->listen(port, host);
 	socket->writeHeader();
 	return 1;
 }

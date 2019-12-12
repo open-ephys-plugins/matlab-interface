@@ -92,7 +92,11 @@ void MatlabEngineEditor::timerCallback()
 
 void MatlabEngineEditor::buttonEvent(Button* button)
 {
-	engine->connect();
+
+	String port = portEntry->getText();
+	String host = hostEntry->getText();
+ 
+	engine->connect(port, host);
 }
 
 

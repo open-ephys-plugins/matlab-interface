@@ -10,7 +10,7 @@ If you are using the pre-compiled version of the Open Ephys GUI, you should down
 
 | Platform | Link |
 |----------|------|
-|Windows   |[matlab-plugin-for-windows-0.4.5.1](www.google.com)|
+|Windows   |[matlab-plugin-for-windows-0.4.5.1](https://dl.bintray.com/medengineer/oe-plugins/matlab-plugin-for-windows-0.4.5.1.7z)|
 |Linux     |[matlab-plugin-for-linux-0.4.5.1](www.google.com)|
 |Mac       |[matlab-plugin-for-mac-0.4.5.1](www.google.com)|
 

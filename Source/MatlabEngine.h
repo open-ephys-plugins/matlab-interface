@@ -56,7 +56,7 @@ public:
 	void setSelectedChannel(int channel);
 	int getSelectedChannel() { return selectedChannel; };
 
-	int connect();
+	int connect(String port, String host);
 
 	void process(AudioSampleBuffer& buffer) override;
 

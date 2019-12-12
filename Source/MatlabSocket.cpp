@@ -13,12 +13,12 @@ MatlabSocket::~MatlabSocket()
 		connection->close();
 }
 
-int MatlabSocket::listen()
+int MatlabSocket::listen(int port, String host)
 {
-
+	
 	int rc; 
 
-	createListener(port,""); //empty string means use localhost address (127.0.0.1)
+	createListener(port,host); //empty string means use localhost address (127.0.0.1)
 	std::cout << "Waiting for next connection...\n" << std::endl; fflush(stdout);
 	connection = waitForNextConnection();
 	if (connection != nullptr)

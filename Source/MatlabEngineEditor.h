@@ -48,7 +48,6 @@ private:
 
 	MatlabEngine* engine;
 
-	//Define UI Elements here...
 	ScopedPointer<Label> hostLabel;
 	ScopedPointer<Label> hostEntry;
 	ScopedPointer<Label> portLabel;
