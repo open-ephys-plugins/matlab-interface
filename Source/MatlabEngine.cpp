@@ -13,7 +13,6 @@ MatlabEngine::~MatlabEngine()
 
 }
 
-/* Matlab engine methods for periodically calling a Matlab function on downsampled data */
 int MatlabEngine::connect()
 {
 	return socketThread->openSocket();
@@ -23,23 +22,6 @@ void MatlabEngine::setSelectedChannel(int channel)
 {
 	selectedChannel = channel;
 	socketThread->setSelectedChannel(channel);
-}
-
-void MatlabEngine::runTest()
-{
-
-	matlab::data::TypedArray<double> const argArray = factory.createArray({1,4}, {-2.0, 2.0, 6.0, 8.0 });
-
-	matlab::data::Array const results = matlab->feval("sqrt", argArray);
-
-	for (int i = 0; i < results.getNumberOfElements(); i++) {
-		double a = argArray[i];
-		std::complex<double> v = results[i];
-		double realPart = v.real();
-		double imgPart = v.imag();
-		//std::cout << "Square root of " << a << " is " << realPart << " + " << imgPart << "i" << std::endl;
-	}
-
 }
 
 AudioProcessorEditor* MatlabEngine::createEditor()
@@ -88,7 +70,6 @@ void MatlabEngine::updateSettings()
 }
 
 
-
 /* Sample call
 
 	matlab::data::ArrayFactory factory;
@@ -105,5 +86,22 @@ void MatlabEngine::updateSettings()
 		std::cout << "Square root of " << a << " is " << realPart << " + " << imgPart << "i" << std::endl;
 	}
 
-*/
 
+void MatlabEngine::runTest()
+{
+
+	matlab::data::TypedArray<double> const argArray = factory.createArray({1,4}, {-2.0, 2.0, 6.0, 8.0 });
+
+	matlab::data::Array const results = matlab->feval("sqrt", argArray);
+
+	for (int i = 0; i < results.getNumberOfElements(); i++) {
+		double a = argArray[i];
+		std::complex<double> v = results[i];
+		double realPart = v.real();
+		double imgPart = v.imag();
+		//std::cout << "Square root of " << a << " is " << realPart << " + " << imgPart << "i" << std::endl;
+	}
+
+}
+
+*/

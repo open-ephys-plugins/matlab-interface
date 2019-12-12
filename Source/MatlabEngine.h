@@ -6,8 +6,8 @@
 
 #include "DataQueue.h"
 #include "SocketThread.h"
-#include "MatlabDataArray.hpp"
-#include "MatlabEngine.hpp"
+//#include "MatlabDataArray.hpp"
+//#include "MatlabEngine.hpp"
 
 #include <iostream>
 #include <chrono>
@@ -81,9 +81,8 @@ private:
 	ScopedPointer<DataQueue> dataQueue;
 	ScopedPointer<SocketThread> socketThread;
 
-	std::unique_ptr<matlab::engine::MATLABEngine> matlab;
-
-	matlab::data::ArrayFactory factory;
+	//std::unique_ptr<matlab::engine::MATLABEngine> matlab;
+	//matlab::data::ArrayFactory factory;
 
 	std::vector<float> matlab_data;
 
