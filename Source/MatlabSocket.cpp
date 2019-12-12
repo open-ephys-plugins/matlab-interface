@@ -61,7 +61,7 @@ int MatlabSocket::writeData(int channel, const float* buffer, int size, int idx)
 		bufferSize = size;
 	}
 
-	if (channel == 0) //(channel == 0)
+	if (channel == selectedChannel) //TODO: Strean as many channels as possible
 	{
 		
 		for (int i = 0; i < size; i++)
@@ -76,41 +76,49 @@ int MatlabSocket::writeData(int channel, const float* buffer, int size, int idx)
 		//std::cout << "Waiting to receive data..." << std::endl; fflush(stdout);
  		connection->read(readBuffer, READ_BUFFER_SIZE, blockUntilSpecifiedAmountHasArrived);
 
-		//Parse read buffer: You know if you see 2 space characters in a row, the rest will be spaces...
-		String resp = String(readBuffer);
-		int idx = 0;
-		int spaceCount = 0;
-		while (spaceCount < 2)
-		{
-			if (readBuffer[idx] == 0x20)
-			{
-				spaceCount++;
-			}
-			else
-			{
-				spaceCount = 0;
-			}
-			idx++;
-		}
-		std::cout << "$" << resp.substring(0, idx) << std::endl;
-
-		StringArray tokens;
-		tokens.addTokens (resp.substring(0, idx), " ", "\"");
-
-		std::cout << "Got " << tokens.size() << " values!" << std::endl;
-		for (int i=0; i<tokens.size(); i++)
-		{
-			std::cout << tokens[i].getIntValue() << " "; 
-		}
-		std::cout << std::endl; fflush(stdout);
-
-		/*
-		if (String(readBuffer) == "Stop!")
-			CoreServices::setAcquisitionStatus(false);
-		*/
-
 	}
 
 	return 1;
 
+}
+
+int MatlabSocket::readData()
+{
+
+	//TODO: Process data coming from Matlab
+	/*
+		if (String(readBuffer) == "Stop!")
+			CoreServices::setAcquisitionStatus(false);
+	*/
+
+	//Parse read buffer: You know if you see 2 space characters in a row, the rest will be spaces...
+
+	String resp = String(readBuffer);
+	int idx = 0;
+	int spaceCount = 0;
+	while (spaceCount < 2)
+	{
+		if (readBuffer[idx] == 0x20)
+		{
+			spaceCount++;
+		}
+		else
+		{
+			spaceCount = 0;
+		}
+		idx++;
+	}
+	std::cout << "$" << resp.substring(0, idx) << std::endl;
+
+	StringArray tokens;
+	tokens.addTokens(resp.substring(0, idx), " ", "\"");
+
+	std::cout << "Got " << tokens.size() << " values!" << std::endl;
+	for (int i = 0; i < tokens.size(); i++)
+	{
+		std::cout << tokens[i].getIntValue() << " ";
+	}
+	std::cout << std::endl;
+	fflush(stdout);
+	return 1;
 }

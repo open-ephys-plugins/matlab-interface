@@ -14,16 +14,15 @@ MatlabEngine::~MatlabEngine()
 }
 
 /* Matlab engine methods for periodically calling a Matlab function on downsampled data */
-void MatlabEngine::start()
+int MatlabEngine::connect()
 {
-	if (matlab == nullptr)
-	{
-		matlab = matlab::engine::startMATLAB();
-	}
-	else
-	{
-		printf("MATLAB has already started\n");                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-	}
+	return socketThread->openSocket();
+}
+
+void MatlabEngine::setSelectedChannel(int channel)
+{
+	selectedChannel = channel;
+	socketThread->setSelectedChannel(channel);
 }
 
 void MatlabEngine::runTest()
@@ -60,6 +59,7 @@ void MatlabEngine::process(AudioSampleBuffer& buffer)
 		dataQueue->setChannels(nChannels);
 		socketThread->setQueuePointers(dataQueue);
 		socketThread->setFirstBlockFlag(true);
+		socketThread->setSelectedChannel(selectedChannel);
 		socketThread->startThread();
 	}
 

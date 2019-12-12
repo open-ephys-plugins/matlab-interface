@@ -20,8 +20,8 @@ classdef Plotter < GenericProcessor
             
             self = self@GenericProcessor(host, port);
             
-            self.xAxisRange = [0,5000];
-            self.yAxisRange = [-1,4];
+            self.xAxisRange = [0,80000];
+            self.yAxisRange = [-1000 1000];
             
             plotTitle = 'Open Ephys Data Stream';
             xLabel = 'Sample Count';

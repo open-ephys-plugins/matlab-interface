@@ -75,7 +75,6 @@ MatlabEngineEditor::~MatlabEngineEditor()
 
 void MatlabEngineEditor::updateSettings()
 {
-	std::cout << getProcessor()->getNumInputs() << std::endl;
 
 	channelSelect->clear();
 
@@ -93,6 +92,7 @@ void MatlabEngineEditor::timerCallback()
 
 void MatlabEngineEditor::buttonEvent(Button* button)
 {
+	engine->connect();
 }
 
 

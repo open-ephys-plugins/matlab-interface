@@ -3,6 +3,8 @@
 #define WRITE_BUFFER_SIZE 40960
 #define READ_BUFFER_SIZE 1024
 
+class MatlabEngine;
+
 //A juce::StreamingSocket class optimized for streaming data to Matlab
 class MatlabSocket : public StreamingSocket
 {
@@ -12,6 +14,10 @@ public:
 	int listen();
 	int writeHeader();
 	int writeData(int channel, const float* buffer, int size, int idx);
+	int readData();
+
+	int selectedChannel;
+
 private:
 
 	bool sentHeader;

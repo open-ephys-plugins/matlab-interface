@@ -53,8 +53,10 @@ public:
 	bool hasEditor() const { return true; }
 	AudioProcessorEditor* createEditor() override;
 
-	void setSelectedChannel(int channel) { selectedChannel = channel; };
+	void setSelectedChannel(int channel);
 	int getSelectedChannel() { return selectedChannel; };
+
+	int connect();
 
 	void process(AudioSampleBuffer& buffer) override;
 

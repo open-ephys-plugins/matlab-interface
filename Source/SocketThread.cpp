@@ -28,9 +28,7 @@ Thread("Socket Thread"),
 m_receivedFirstBlock(false),
 m_cleanExit(true)
 {
-	//socket = new MatlabSocket();
- 	//socket->listen();
- 	//socket->writeHeader();
+	socket = new MatlabSocket();
 }
 
 SocketThread::~SocketThread()
@@ -40,6 +38,18 @@ SocketThread::~SocketThread()
 void SocketThread::setQueuePointers(DataQueue* data)
 {
 	m_dataQueue = data;
+}
+
+void SocketThread::setSelectedChannel(int channel)
+{
+	socket->selectedChannel = channel;
+}
+
+int SocketThread::openSocket()
+{
+	socket->listen();
+	socket->writeHeader();
+	return 1;
 }
 
 void SocketThread::setFirstBlockFlag(bool didReceiveFirstBlock)

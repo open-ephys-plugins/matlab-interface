@@ -45,6 +45,9 @@ public:
 	//void setChannelMap(const Array<int>& channels);
 	//void setQueuePointers(DataQueue* data, EventMsgQueue* events, SpikeMsgQueue* spikes);
 	void setQueuePointers(DataQueue* data);
+	void setSelectedChannel(int channel);
+
+	int openSocket(); 
 
 	void run() override;
 
