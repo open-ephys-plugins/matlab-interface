@@ -54,7 +54,7 @@ MatlabEngineEditor::MatlabEngineEditor(MatlabEngine* parentNode, bool useDefault
 
 	connectButton = new UtilityButton("CONNECT", Font("Small Text", 13, Font::bold));
 	connectButton->setRadius(3.0f);
-	connectButton->setBounds(20, 75, 100, 20);
+	connectButton->setBounds(25, 75, 100, 20);
 	connectButton->addListener(this);
 	addAndMakeVisible(connectButton);
 
@@ -64,11 +64,23 @@ MatlabEngineEditor::MatlabEngineEditor(MatlabEngine* parentNode, bool useDefault
 
 	channelSelect = new ComboBox("ChannelSelect");
 	channelSelect->setBounds(80, 100, 50, 20);
+	channelSelect->addListener(this);
 	addAndMakeVisible(channelSelect);
 }
 
 MatlabEngineEditor::~MatlabEngineEditor()
 {
+
+}
+
+void MatlabEngineEditor::updateSettings()
+{
+	std::cout << getProcessor()->getNumInputs() << std::endl;
+
+	channelSelect->clear();
+
+	for (int ch = 0; ch < getProcessor()->getNumInputs(); ch++)
+		channelSelect->addItem(String(ch), ch + 1);
 
 }
 
@@ -86,7 +98,7 @@ void MatlabEngineEditor::buttonEvent(Button* button)
 
 void MatlabEngineEditor::comboBoxChanged(ComboBox *combo)
 {
-	CoreServices::updateSignalChain(this);
+	engine->setSelectedChannel(combo->getSelectedItemIndex());
 }
 
 

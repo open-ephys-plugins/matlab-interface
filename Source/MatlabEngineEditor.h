@@ -38,6 +38,7 @@ public:
 	MatlabEngineEditor(MatlabEngine* parentNode, bool useDefaultParameterEditors);
 	virtual ~MatlabEngineEditor();
 
+	void updateSettings();
 	void timerCallback();
 
 	void buttonEvent(Button* button);

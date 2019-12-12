@@ -53,6 +53,9 @@ public:
 	bool hasEditor() const { return true; }
 	AudioProcessorEditor* createEditor() override;
 
+	void setSelectedChannel(int channel) { selectedChannel = channel; };
+	int getSelectedChannel() { return selectedChannel; };
+
 	void process(AudioSampleBuffer& buffer) override;
 
 	void handleEvent(const EventChannel* eventInfo, const MidiMessage& event, int samplePosition) override;
@@ -70,6 +73,8 @@ public:
 	void runTest();
 
 private:
+
+	int selectedChannel;
 
 	ScopedPointer<DataQueue> dataQueue;
 	ScopedPointer<SocketThread> socketThread;

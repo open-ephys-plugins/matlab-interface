@@ -13,6 +13,7 @@ public:
 	int writeHeader();
 	int writeData(int channel, const float* buffer, int size, int idx);
 private:
+
 	bool sentHeader;
 	int bufferSize;
 	ScopedPointer<StreamingSocket> connection;
