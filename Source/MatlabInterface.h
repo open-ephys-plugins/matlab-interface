@@ -1,13 +1,11 @@
-#ifndef MATLABENGINE_H_DEFINED
-#define MATLABENGINE_H_DEFINED
+#ifndef MATLABINTERFACE_H_DEFINED
+#define MATLABINTERFACE_H_DEFINED
 
 #include <ProcessorHeaders.h>
-#include "MatlabEngineEditor.h"
+#include "MatlabInterfaceEditor.h"
 
 #include "DataQueue.h"
 #include "SocketThread.h"
-//#include "MatlabDataArray.hpp"
-//#include "MatlabEngine.hpp"
 
 #include <iostream>
 #include <chrono>
@@ -44,11 +42,11 @@ struct func_timer
 };
 
 //
-class MatlabEngine : public GenericProcessor
+class MatlabInterface : public GenericProcessor
 {
 public:
-	MatlabEngine();
-	~MatlabEngine();
+	MatlabInterface();
+	~MatlabInterface();
 
 	bool hasEditor() const { return true; }
 	AudioProcessorEditor* createEditor() override;
@@ -80,9 +78,6 @@ private:
 
 	ScopedPointer<DataQueue> dataQueue;
 	ScopedPointer<SocketThread> socketThread;
-
-	//std::unique_ptr<matlab::engine::MATLABEngine> matlab;
-	//matlab::data::ArrayFactory factory;
 
 	std::vector<float> matlab_data;
 

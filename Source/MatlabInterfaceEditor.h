@@ -21,22 +21,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#ifndef __MATLAB_ENGINE_EDITOR_H__
-#define __MATLAB_ENGINE_EDITOR_H__
+#ifndef __MATLAB_INTERFACE_EDITOR_H__
+#define __MATLAB_INTERFACE_EDITOR_H__
 
 #include <EditorHeaders.h>
-#include "MatlabEngine.h"
+#include "MatlabInterface.h"
 
 #define UI_TIMER_PERIOD 2000 //Update the UI every UI_TIMER_PERIOD ms
 
-class MatlabEngine;
+class MatlabInterface;
 
-class MatlabEngineEditor : public GenericEditor, public ComboBoxListener
+class MatlabInterfaceEditor : public GenericEditor, public ComboBoxListener
 {
 public:
 
-	MatlabEngineEditor(MatlabEngine* parentNode, bool useDefaultParameterEditors);
-	virtual ~MatlabEngineEditor();
+	MatlabInterfaceEditor(MatlabInterface* parentNode, bool useDefaultParameterEditors);
+	virtual ~MatlabInterfaceEditor();
 
 	void updateSettings();
 	void timerCallback();
@@ -46,7 +46,7 @@ public:
 
 private:
 
-	MatlabEngine* engine;
+	MatlabInterface* interface;
 
 	ScopedPointer<Label> hostLabel;
 	ScopedPointer<Label> hostEntry;
@@ -56,7 +56,7 @@ private:
 	ScopedPointer<Label> channelLabel;
 	ScopedPointer<ComboBox> channelSelect;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MatlabEngineEditor);
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MatlabInterfaceEditor);
 
 };
 

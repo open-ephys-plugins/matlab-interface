@@ -24,7 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef SOCKETTHREAD_H_INCLUDED
 #define SOCKETTHREAD_H_INCLUDED
 
-//#include "BinaryRecording.h"
 //#include "EventQueue.h"
 #include "MatlabSocket.h"
 #include "DataQueue.h"

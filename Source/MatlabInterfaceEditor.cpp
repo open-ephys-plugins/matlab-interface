@@ -22,15 +22,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <stdio.h>
-#include "MatlabEngineEditor.h"
-#include "MatlabEngine.h"
+#include "MatlabInterfaceEditor.h"
+#include "MatlabInterface.h"
 
-MatlabEngineEditor::MatlabEngineEditor(MatlabEngine* parentNode, bool useDefaultParameterEditors = true)
+MatlabInterfaceEditor::MatlabInterfaceEditor(MatlabInterface* parentNode, bool useDefaultParameterEditors = true)
 	: GenericEditor(parentNode, useDefaultParameterEditors)
 
 {
 
-	engine = parentNode;
+	interface = parentNode;
 
 	desiredWidth = 150;
 
@@ -68,12 +68,12 @@ MatlabEngineEditor::MatlabEngineEditor(MatlabEngine* parentNode, bool useDefault
 	addAndMakeVisible(channelSelect);
 }
 
-MatlabEngineEditor::~MatlabEngineEditor()
+MatlabInterfaceEditor::~MatlabInterfaceEditor()
 {
 
 }
 
-void MatlabEngineEditor::updateSettings()
+void MatlabInterfaceEditor::updateSettings()
 {
 
 	channelSelect->clear();
@@ -83,26 +83,26 @@ void MatlabEngineEditor::updateSettings()
 
 }
 
-void MatlabEngineEditor::timerCallback()
+void MatlabInterfaceEditor::timerCallback()
 {
 
 	stopTimer();
 
 }
 
-void MatlabEngineEditor::buttonEvent(Button* button)
+void MatlabInterfaceEditor::buttonEvent(Button* button)
 {
 
 	String port = portEntry->getText();
 	String host = hostEntry->getText();
  
-	engine->connect(port, host);
+	interface->connect(port, host);
 }
 
 
-void MatlabEngineEditor::comboBoxChanged(ComboBox *combo)
+void MatlabInterfaceEditor::comboBoxChanged(ComboBox *combo)
 {
-	engine->setSelectedChannel(combo->getSelectedItemIndex());
+	interface->setSelectedChannel(combo->getSelectedItemIndex());
 }
 
 
