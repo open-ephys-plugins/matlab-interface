@@ -10,9 +10,9 @@ If you are using the pre-compiled version of the Open Ephys GUI, you should down
 
 | Platform | Link |
 |----------|------|
-|Windows   |[matlab-plugin-for-windows-0.4.5.1](https://dl.bintray.com/medengineer/oe-plugins/matlab-plugin-for-windows-0.4.5.1.7z)|
-|Linux     |[matlab-plugin-for-linux-0.4.5.1]()|
-|Mac       |[matlab-plugin-for-mac-0.4.5.1](https://dl.bintray.com/medengineer/oe-plugins/matlab-plugin-for-mac-0.4.5.1.7z)|
+|Windows   |[matlab-plugin-for-windows](https://dl.bintray.com/open-ephys-gui-plugins/MatlabInterface/MatlabInterface-windows_0.1.0-API6.zip)|
+|Linux     |[matlab-plugin-for-linux](https://dl.bintray.com/open-ephys-gui-plugins/MatlabInterface/MatlabInterface-linux_0.1.0-API6.zip)|
+|Mac       |[matlab-plugin-for-mac](https://dl.bintray.com/open-ephys-gui-plugins/MatlabInterface/MatlabInterface-mac_0.1.0-API6.zip)|
 
 #### *Option 2: Build from source*
 

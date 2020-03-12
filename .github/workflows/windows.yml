@@ -2,6 +2,8 @@ name: Windows
 
 on: 
   push:
+    paths:
+    - "Source"
 
 jobs:
 
