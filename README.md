@@ -1,4 +1,4 @@
-# Matlab plugin for Open Ephys GUI 0.4.5
+# Matlab Interface
 
 The Matlab plugin for the Open Ephys GUI allows users to stream live data from the Open Ephys GUI to a live Matlab session. A Matlab API is included which allows seamless processing of the incoming data in real-time. This is an early release of the plugin that currently supports streaming a single channel to Matlab in real time. If you are interested in additional functionality, please open an issue describing your intended use case and we can prioritize development based on demand. 
 
@@ -10,9 +10,9 @@ If you are using the pre-compiled version of the Open Ephys GUI, you should down
 
 | Platform | Link |
 |----------|------|
-|Windows   |[matlab-plugin-for-windows](https://dl.bintray.com/open-ephys-gui-plugins/MatlabInterface/MatlabInterface-windows_0.1.0-API6.zip)|
-|Linux     |[matlab-plugin-for-linux](https://dl.bintray.com/open-ephys-gui-plugins/MatlabInterface/MatlabInterface-linux_0.1.0-API6.zip)|
-|Mac       |[matlab-plugin-for-mac](https://dl.bintray.com/open-ephys-gui-plugins/MatlabInterface/MatlabInterface-mac_0.1.0-API6.zip)|
+|Windows   |[matlab-plugin-for-windows](https://dl.bintray.com/open-ephys-gui-plugins/MatlabInterface/MatlabInterface-windows_0.1.0-API7.zip)|
+|Linux     |[matlab-plugin-for-linux](https://dl.bintray.com/open-ephys-gui-plugins/MatlabInterface/MatlabInterface-linux_0.1.0-API7.zip)|
+|Mac       |[matlab-plugin-for-mac](https://dl.bintray.com/open-ephys-gui-plugins/MatlabInterface/MatlabInterface-mac_0.1.0-API7.zip)|
 
 #### *Option 2: Build from source*
 
