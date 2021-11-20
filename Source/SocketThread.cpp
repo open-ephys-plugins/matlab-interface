@@ -28,7 +28,7 @@ Thread("Socket Thread"),
 m_receivedFirstBlock(false),
 m_cleanExit(true)
 {
-	socket = new MatlabSocket();
+	socket = std::make_unique<MatlabSocket>();
 }
 
 SocketThread::~SocketThread()

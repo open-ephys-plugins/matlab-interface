@@ -31,30 +31,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class MatlabInterface;
 
-class MatlabInterfaceEditor : public GenericEditor, public ComboBoxListener
+class MatlabInterfaceEditor : public GenericEditor, public ComboBox::Listener, public Button::Listener, public Timer
 {
 public:
 
-	MatlabInterfaceEditor(MatlabInterface* parentNode, bool useDefaultParameterEditors);
+	MatlabInterfaceEditor(MatlabInterface* parentNode);
 	virtual ~MatlabInterfaceEditor();
 
 	void updateSettings();
 	void timerCallback();
 
-	void buttonEvent(Button* button);
+	void buttonClicked(Button* button);
 	void comboBoxChanged(ComboBox* combo);
 
 private:
 
 	MatlabInterface* interface;
 
-	ScopedPointer<Label> hostLabel;
-	ScopedPointer<Label> hostEntry;
-	ScopedPointer<Label> portLabel;
-	ScopedPointer<Label> portEntry;
-	ScopedPointer<UtilityButton> connectButton;
-	ScopedPointer<Label> channelLabel;
-	ScopedPointer<ComboBox> channelSelect;
+	std::unique_ptr<UtilityButton> connectButton;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MatlabInterfaceEditor);
 

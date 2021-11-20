@@ -6,7 +6,7 @@
 class MatlabInterface;
 
 //A juce::StreamingSocket class optimized for streaming data to Matlab
-class MatlabSocket : public StreamingSocket
+class MatlabSocket
 {
 public:
 	MatlabSocket();
@@ -22,7 +22,7 @@ private:
 
 	bool sentHeader;
 	int bufferSize;
-	ScopedPointer<StreamingSocket> connection;
+	std::unique_ptr<StreamingSocket> connection;
 	int port;
 	bool connected; //true if client (Matlab) has connected
 	char writeBuffer[WRITE_BUFFER_SIZE];

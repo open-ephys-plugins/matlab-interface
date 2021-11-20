@@ -27,19 +27,6 @@
 #define MAX_BUFFER_SIZE			40960
 #define CHANNELS_PER_THREAD		384
 
-template <typename Time = std::chrono::microseconds, typename Clock = std::chrono::high_resolution_clock>
-struct func_timer
-{
-	template <typename F, typename... Args>
-	static Time duration(F&& f, Args... args)
-	{
-		auto start = Clock::now();
-		std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
-		auto end = Clock::now();
-
-		return std::chrono::duration_cast<Time>(end-start);
-	} 
-};
 
 //
 class MatlabInterface : public GenericProcessor
@@ -54,13 +41,11 @@ public:
 	void setSelectedChannel(int channel);
 	int getSelectedChannel() { return selectedChannel; };
 
-	int connect(String port, String host);
+	int connect();
 
 	void process(AudioSampleBuffer& buffer) override;
 
 	void handleEvent(const EventChannel* eventInfo, const MidiMessage& event, int samplePosition) override;
-
-	void setParameter(int parameterIndex, float newValue) override;
 
 	/** Saving custom settings to XML. */
 	//void saveCustomParametersToXml(XmlElement* parentElement) override;
@@ -69,6 +54,10 @@ public:
 	//void loadCustomParametersFromXml() override;
 
 	void updateSettings() override;
+	
+	/** Called whenever a parameter's value is changed (called by GenericProcessor::setParameter())*/
+    void parameterValueChanged(Parameter* param) override;
+
 	void start();
 	void runTest();
 
@@ -76,8 +65,8 @@ private:
 
 	int selectedChannel;
 
-	ScopedPointer<DataQueue> dataQueue;
-	ScopedPointer<SocketThread> socketThread;
+	std::unique_ptr<DataQueue> dataQueue;
+	std::unique_ptr<SocketThread> socketThread;
 
 	std::vector<float> matlab_data;
 

@@ -60,7 +60,7 @@ private:
 	void writeHeader();
 	void writeData(const AudioSampleBuffer& buffer, int maxSamples, int maxEvents, int maxSpikes, bool lastBlock = false);
 
-	ScopedPointer<MatlabSocket> socket;
+	std::unique_ptr<MatlabSocket> socket;
 	Array<int> m_channelArray;
 
 	DataQueue* m_dataQueue;

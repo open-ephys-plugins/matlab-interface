@@ -1,7 +1,7 @@
 #include "MatlabSocket.h"
 #include "../../Source/CoreServices.h"
 
-MatlabSocket::MatlabSocket() : StreamingSocket(), port(1234)
+MatlabSocket::MatlabSocket() : port(1234)
 {
 	bufferSize = WRITE_BUFFER_SIZE;
 	sentHeader = false;
@@ -18,9 +18,9 @@ int MatlabSocket::listen(int port, String host)
 	
 	int rc; 
 
-	createListener(port,host); //empty string means use localhost address (127.0.0.1)
+	connection->createListener(port,host); //empty string means use localhost address (127.0.0.1)
 	std::cout << "Waiting for next connection...\n" << std::endl; fflush(stdout);
-	connection = waitForNextConnection();
+	connection->waitForNextConnection();
 	if (connection != nullptr)
 	{
 

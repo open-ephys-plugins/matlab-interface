@@ -2,10 +2,14 @@
 
 MatlabInterface::MatlabInterface() 
 	: GenericProcessor("Matlab Interface"),
-	dataQueue(new DataQueue(WRITE_BLOCK_LENGTH, DATA_BUFFER_NBLOCKS)),
-	socketThread(new SocketThread())
+	dataQueue(std::make_unique<DataQueue>(WRITE_BLOCK_LENGTH, DATA_BUFFER_NBLOCKS)),
+	socketThread(std::make_unique<SocketThread>())
 {
-	setProcessorType(PROCESSOR_TYPE_FILTER);
+	setProcessorType(Plugin::Processor::FILTER);
+
+	addStringParameter(Parameter::GLOBAL_SCOPE, "host_address", "Set host address", "127.0.0.1", true);
+    addStringParameter(Parameter::GLOBAL_SCOPE, "port_number", "Set port number", "1234", true);
+	addSelectedChannelsParameter(Parameter::STREAM_SCOPE, "selected_channel", "The continuous channel to analyze", 1);
 }
 
 MatlabInterface::~MatlabInterface()
@@ -13,9 +17,12 @@ MatlabInterface::~MatlabInterface()
 
 }
 
-int MatlabInterface::connect(String port, String host)
+int MatlabInterface::connect()
 {
 	//TODO: Basic host and port error checking
+	String port = getParameter("port_number")->getValue();
+	String host = getParameter("host_address")->getValue();
+
 	return socketThread->openSocket(port.getIntValue(), host);
 }
 
@@ -27,8 +34,19 @@ void MatlabInterface::setSelectedChannel(int channel)
 
 AudioProcessorEditor* MatlabInterface::createEditor()
 {
-    editor = new MatlabInterfaceEditor (this, true);
-    return editor;
+    editor = std::make_unique<MatlabInterfaceEditor>(this);
+    return editor.get();
+}
+
+void MatlabInterface::parameterValueChanged(Parameter* param)
+{
+	if (param->getName().equalsIgnoreCase("selected_channel"))
+    {
+        int localIndex = (int)param->getValue();
+        int globalIndex = getDataStream(param->getStreamId())->getContinuousChannels()[localIndex]->getGlobalIndex();
+		setSelectedChannel(globalIndex);
+    } 
+
 }
 
 void MatlabInterface::process(AudioSampleBuffer& buffer)
@@ -40,7 +58,7 @@ void MatlabInterface::process(AudioSampleBuffer& buffer)
 	if (!socketThread->isThreadRunning())
 	{
 		dataQueue->setChannels(nChannels);
-		socketThread->setQueuePointers(dataQueue);
+		socketThread->setQueuePointers(dataQueue.get());
 		socketThread->setFirstBlockFlag(true);
 		socketThread->setSelectedChannel(selectedChannel);
 		socketThread->startThread();
@@ -60,12 +78,10 @@ void MatlabInterface::handleEvent(const EventChannel* eventInfo, const MidiMessa
     //TODO
 }
 
-void MatlabInterface::setParameter (int parameterIndex, float newValue)
-{
-    //TODO
-}
-
 void MatlabInterface::updateSettings()
 {
-	//TODO
+	for (auto stream : getDataStreams())
+	{
+        parameterValueChanged(stream->getParameter("selected_channel"));
+	}
 }
