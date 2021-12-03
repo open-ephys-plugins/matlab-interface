@@ -33,19 +33,19 @@ MatlabInterfaceEditor::MatlabInterfaceEditor(MatlabInterface* parentNode)
 
 	interface = parentNode;
 
-	desiredWidth = 200;
+	desiredWidth = 230;
 
 	addTextBoxParameterEditor("host_address", 10, 25);
 
-	addTextBoxParameterEditor("port_number", 100, 25);
+	addTextBoxParameterEditor("port_number", 115, 25);
 
 	connectButton = std::make_unique<UtilityButton>("Connect", Font("Small Text", 13, Font::bold));
 	connectButton->setRadius(3.0f);
-	connectButton->setBounds(55, 75, 90, 20);
+	connectButton->setBounds(70, 75, 90, 20);
 	connectButton->addListener(this);
 	addAndMakeVisible(connectButton.get());
 
-	addSelectedChannelsParameterEditor("selected_channel", 60, 100);
+	addSelectedChannelsParameterEditor("selected_channel", 75, 100);
 }
 
 MatlabInterfaceEditor::~MatlabInterfaceEditor()
