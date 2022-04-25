@@ -64,16 +64,23 @@ void MatlabInterface::process(AudioSampleBuffer& buffer)
 		socketThread->startThread();
 	}
 
-	for (int ch = 0; ch < nChannels; ++ch)
+	for (auto stream : dataStreams)
 	{
-		int numSamples = getNumSamples(ch);
-		int timestamp = getTimestamp(ch);
-		dataQueue->writeChannel(buffer, ch, numSamples, timestamp);
+		const uint16 streamId = stream->getStreamId();
+
+		uint32 numSamples = getNumSamplesInBlock(streamId);
+
+		int64 sampleNumber = getFirstSampleNumberForBlock(streamId);
+
+		for (auto channel : stream->getContinuousChannels())
+		{
+			dataQueue->writeChannel(buffer, channel->getGlobalIndex(), numSamples, sampleNumber);
+		}
 	}
 
 }
 
-void MatlabInterface::handleEvent(const EventChannel* eventInfo, const MidiMessage& event, int samplePosition)
+void MatlabInterface::handleTTLEvent(TTLEventPtr event)
 {
     //TODO
 }

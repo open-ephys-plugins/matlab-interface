@@ -45,7 +45,7 @@ public:
 
 	void process(AudioSampleBuffer& buffer) override;
 
-	void handleEvent(const EventChannel* eventInfo, const MidiMessage& event, int samplePosition) override;
+	void handleTTLEvent(TTLEventPtr event) override;
 
 	/** Saving custom settings to XML. */
 	//void saveCustomParametersToXml(XmlElement* parentElement) override;
