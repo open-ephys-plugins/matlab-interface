@@ -68,6 +68,7 @@ void MatlabInterfaceEditor::timerCallback()
 void MatlabInterfaceEditor::buttonClicked(Button* button)
 {
 	interface->connect();
+	button->setEnabled(false);
 }
 
 

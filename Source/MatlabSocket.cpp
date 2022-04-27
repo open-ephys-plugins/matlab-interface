@@ -18,28 +18,33 @@ int MatlabSocket::listen(int port, String host)
 	
 	int rc; 
 
-	connection->createListener(port,host); //empty string means use localhost address (127.0.0.1)
-	std::cout << "Waiting for next connection...\n" << std::endl; fflush(stdout);
-	connection->waitForNextConnection();
-	if (connection != nullptr)
+	connection = new StreamingSocket();
+	connection->createListener(port); //empty string means use localhost address (127.0.0.1)
+	LOGD("Waiting for next connection..."); 
+	socket = connection->waitForNextConnection();
+	if (socket != nullptr)
 	{
-
-		std::cout << "Socket is connected!" << std::endl;
-		std::cout << "Waiting until socket is ready for writing..." << std::endl;
+		LOGD("Socket is ", (socket->isConnected() ? "connected!" : " NOT connected! "));
 		bool readyForReading = false; //this means ready for writing...
-		int timeout = 3000; 
-		rc = connection->waitUntilReady(readyForReading, timeout);
+		int timeout = 5000; 
+		rc = socket->waitUntilReady(readyForReading, timeout);
 		if (rc == 1)
-			std::cout << "Socket is ready for writing!" << std::endl;
+		{
+			LOGC("Matlab socket is ready for writing!");
+		}
 		else if (rc == 0)
-			std::cout << "Socket timed out!" << std::endl;
+		{
+			LOGC("Matlab socket timed out!");
+		}
 		else
-			std::cout << "Error occured while waiting for socket!" << std::endl;
+		{
+			LOGD("Error occured while waiting for socket!");
+		}
 
 		return rc;
 
 	}
-	printf("Socket timed out!\n");
+	printf("No connection was made!\n");
 	return -2;
 
 }
@@ -67,14 +72,14 @@ int MatlabSocket::writeData(int channel, const float* buffer, int size, int idx)
 		for (int i = 0; i < size; i++)
 		{
 			snprintf(writeBuffer, sizeof(writeBuffer), "%f", *(buffer+i));
-			connection->write(writeBuffer, strlen(writeBuffer));
-			connection->write(" ",strlen(" "));
+			socket->write(writeBuffer, strlen(writeBuffer));
+			socket->write(" ",strlen(" "));
 		}
-		connection->write("\n", strlen("\n"));
+		socket->write("\n", strlen("\n"));
 
 		bool blockUntilSpecifiedAmountHasArrived = false;
 		//std::cout << "Waiting to receive data..." << std::endl; fflush(stdout);
- 		connection->read(readBuffer, READ_BUFFER_SIZE, blockUntilSpecifiedAmountHasArrived);
+		socket->read(readBuffer, READ_BUFFER_SIZE, blockUntilSpecifiedAmountHasArrived);
 
 	}
 

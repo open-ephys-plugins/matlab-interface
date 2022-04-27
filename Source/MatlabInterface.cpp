@@ -3,7 +3,8 @@
 MatlabInterface::MatlabInterface() 
 	: GenericProcessor("Matlab Interface"),
 	dataQueue(std::make_unique<DataQueue>(WRITE_BLOCK_LENGTH, DATA_BUFFER_NBLOCKS)),
-	socketThread(std::make_unique<SocketThread>())
+	socketThread(std::make_unique<SocketThread>()),
+	selectedChannel(0)
 {
 	setProcessorType(Plugin::Processor::FILTER);
 
@@ -14,12 +15,12 @@ MatlabInterface::MatlabInterface()
 
 MatlabInterface::~MatlabInterface()
 {
-
+	socketThread->signalThreadShouldExit();
+	socketThread->waitForThreadToExit(2000);
 }
 
 int MatlabInterface::connect()
 {
-	//TODO: Basic host and port error checking
 	String port = getParameter("port_number")->getValue();
 	String host = getParameter("host_address")->getValue();
 
@@ -67,15 +68,11 @@ void MatlabInterface::process(AudioSampleBuffer& buffer)
 	for (auto stream : dataStreams)
 	{
 		const uint16 streamId = stream->getStreamId();
-
 		uint32 numSamples = getNumSamplesInBlock(streamId);
-
 		int64 sampleNumber = getFirstSampleNumberForBlock(streamId);
 
 		for (auto channel : stream->getContinuousChannels())
-		{
 			dataQueue->writeChannel(buffer, channel->getGlobalIndex(), numSamples, sampleNumber);
-		}
 	}
 
 }
@@ -88,7 +85,5 @@ void MatlabInterface::handleTTLEvent(TTLEventPtr event)
 void MatlabInterface::updateSettings()
 {
 	for (auto stream : getDataStreams())
-	{
         parameterValueChanged(stream->getParameter("selected_channel"));
-	}
 }

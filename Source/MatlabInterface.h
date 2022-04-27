@@ -58,9 +58,6 @@ public:
 	/** Called whenever a parameter's value is changed (called by GenericProcessor::setParameter())*/
     void parameterValueChanged(Parameter* param) override;
 
-	void start();
-	void runTest();
-
 private:
 
 	int selectedChannel;
@@ -69,8 +66,6 @@ private:
 	std::unique_ptr<SocketThread> socketThread;
 
 	std::vector<float> matlab_data;
-
-	int count;
 
 };
 

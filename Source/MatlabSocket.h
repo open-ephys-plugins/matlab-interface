@@ -22,7 +22,8 @@ private:
 
 	bool sentHeader;
 	int bufferSize;
-	std::unique_ptr<StreamingSocket> connection;
+	ScopedPointer<StreamingSocket> connection;
+	ScopedPointer<StreamingSocket> socket;
 	int port;
 	bool connected; //true if client (Matlab) has connected
 	char writeBuffer[WRITE_BUFFER_SIZE];
