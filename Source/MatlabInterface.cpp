@@ -4,6 +4,7 @@ MatlabInterface::MatlabInterface()
 	: GenericProcessor("Matlab Interface"),
 	dataQueue(std::make_unique<DataQueue>(WRITE_BLOCK_LENGTH, DATA_BUFFER_NBLOCKS)),
 	socketThread(std::make_unique<SocketThread>()),
+	connected(false),
 	selectedChannel(0)
 {
 	setProcessorType(Plugin::Processor::FILTER);
@@ -11,10 +12,14 @@ MatlabInterface::MatlabInterface()
 	addStringParameter(Parameter::GLOBAL_SCOPE, "host_address", "Set host address", "127.0.0.1", true);
     addStringParameter(Parameter::GLOBAL_SCOPE, "port_number", "Set port number", "1234", true);
 	addSelectedChannelsParameter(Parameter::STREAM_SCOPE, "selected_channel", "The continuous channel to analyze", 1);
+
 }
 
 MatlabInterface::~MatlabInterface()
 {
+	if (!connected && socketThread->socket->connection != nullptr)
+		socketThread->socket->connection->close();
+
 	socketThread->signalThreadShouldExit();
 	socketThread->waitForThreadToExit(2000);
 }
@@ -24,7 +29,8 @@ int MatlabInterface::connect()
 	String port = getParameter("port_number")->getValue();
 	String host = getParameter("host_address")->getValue();
 
-	return socketThread->openSocket(port.getIntValue(), host);
+	if (socketThread->openSocket(port.getIntValue(), host) > 0)
+		connected = true;
 }
 
 void MatlabInterface::setSelectedChannel(int channel)
@@ -52,6 +58,9 @@ void MatlabInterface::parameterValueChanged(Parameter* param)
 
 void MatlabInterface::process(AudioSampleBuffer& buffer)
 {
+
+	if (!connected)
+		return;
 
 	//checkForEvents(false);
 	const int nChannels = buffer.getNumChannels();

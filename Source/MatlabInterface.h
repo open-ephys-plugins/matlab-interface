@@ -58,12 +58,15 @@ public:
 	/** Called whenever a parameter's value is changed (called by GenericProcessor::setParameter())*/
     void parameterValueChanged(Parameter* param) override;
 
+	std::unique_ptr<SocketThread> socketThread;
+
 private:
+
+	bool connected;
 
 	int selectedChannel;
 
 	std::unique_ptr<DataQueue> dataQueue;
-	std::unique_ptr<SocketThread> socketThread;
 
 	std::vector<float> matlab_data;
 

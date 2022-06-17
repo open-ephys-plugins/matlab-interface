@@ -10,7 +10,9 @@ MatlabSocket::MatlabSocket() : port(1234)
 MatlabSocket::~MatlabSocket()
 {
 	if (connection != nullptr)
+	{
 		connection->close();
+	}
 }
 
 int MatlabSocket::listen(int port, String host)
@@ -41,10 +43,13 @@ int MatlabSocket::listen(int port, String host)
 			LOGD("Error occured while waiting for socket!");
 		}
 
+		if (connection->isConnected())
+			connection->close();
+
 		return rc;
 
 	}
-	printf("No connection was made!\n");
+
 	return -2;
 
 }
@@ -61,7 +66,7 @@ int MatlabSocket::writeData(int channel, const float* buffer, int size, int idx)
 
 	if (size > bufferSize)
 	{
-		std::cerr << "Write buffer overrun, resizing from: " << bufferSize << " to: " << size << std::endl;
+		LOGD("Write buffer overrun, resizing from: ", bufferSize, " to: ", size);
 		//TODO: Resize internal buffer?
 		bufferSize = size;
 	}
@@ -113,12 +118,12 @@ int MatlabSocket::readData()
 		}
 		idx++;
 	}
-	std::cout << "$" << resp.substring(0, idx) << std::endl;
+	// std::cout << "$" << resp.substring(0, idx) << std::endl;
 
 	StringArray tokens;
 	tokens.addTokens(resp.substring(0, idx), " ", "\"");
 
-	std::cout << "Got " << tokens.size() << " values!" << std::endl;
+	// std::cout << "Got " << tokens.size() << " values!" << std::endl;
 	for (int i = 0; i < tokens.size(); i++)
 	{
 		std::cout << tokens[i].getIntValue() << " ";

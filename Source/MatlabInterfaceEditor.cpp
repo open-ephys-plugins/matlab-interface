@@ -25,6 +25,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MatlabInterfaceEditor.h"
 #include "MatlabInterface.h"
 
+ConnectionViewer::ConnectionViewer(MatlabInterface* parentNode) : Component(), Thread("ConnectionViewer"),
+	interface(parentNode) 
+{
+
+	width = 100;
+	height = 200;
+	buttonSize = 50;
+
+	setSize(width, height);
+	setColour(ColourSelector::backgroundColourId, Colours::transparentBlack);
+
+	startThread();
+
+};
+
+ConnectionViewer::~ConnectionViewer() 
+{
+
+};
+
+void ConnectionViewer::buttonClicked(Button* button) {};
+
+void ConnectionViewer::run()
+{
+
+	while (!threadShouldExit())
+	{
+		LOGC("Waiting for connection...");
+		interface->connect();
+		signalThreadShouldExit();
+	}
+}
 
 MatlabInterfaceEditor::MatlabInterfaceEditor(MatlabInterface* parentNode)
 	: GenericEditor(parentNode)
@@ -46,11 +78,20 @@ MatlabInterfaceEditor::MatlabInterfaceEditor(MatlabInterface* parentNode)
 	addAndMakeVisible(connectButton.get());
 
 	addSelectedChannelsParameterEditor("selected_channel", 75, 100);
+
+	count = 0;
 }
 
 MatlabInterfaceEditor::~MatlabInterfaceEditor()
 {
 
+	if (viewer)
+	{
+		if (interface->socketThread->socket->connection)
+			interface->socketThread->socket->connection->close();
+		viewer->signalThreadShouldExit();
+		viewer->waitForThreadToExit(2000);
+	}
 }
 
 void MatlabInterfaceEditor::updateSettings()
@@ -60,17 +101,23 @@ void MatlabInterfaceEditor::updateSettings()
 
 void MatlabInterfaceEditor::timerCallback()
 {
-
-	stopTimer();
+	if (viewer->isThreadRunning())
+	{
+		connectButton->setButtonText("wait: " + String(count));
+	}
+	else
+	{
+		stopTimer();
+	}
 
 }
 
 void MatlabInterfaceEditor::buttonClicked(Button* button)
 {
-	interface->connect();
+	viewer = new ConnectionViewer(interface);
 	button->setEnabled(false);
+	//startTimer(200);
 }
-
 
 void MatlabInterfaceEditor::comboBoxChanged(ComboBox *combo)
 {

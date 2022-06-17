@@ -56,11 +56,12 @@ public:
 	//TODO: startChannelBlock;
 	//TODO: endChannelBlock;
 
+	std::unique_ptr<MatlabSocket> socket;
+
 private:
 	void writeHeader();
 	void writeData(const AudioSampleBuffer& buffer, int maxSamples, int maxEvents, int maxSpikes, bool lastBlock = false);
 
-	std::unique_ptr<MatlabSocket> socket;
 	Array<int> m_channelArray;
 
 	DataQueue* m_dataQueue;

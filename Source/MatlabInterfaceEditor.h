@@ -31,7 +31,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class MatlabInterface;
 
-class MatlabInterfaceEditor : public GenericEditor, public ComboBox::Listener, public Button::Listener, public Timer
+class ConnectionViewer : 
+	public Thread,
+	public Component, 
+	public Button::Listener
+{
+public:
+	ConnectionViewer(MatlabInterface* parentNode);
+	~ConnectionViewer();
+	void buttonClicked(Button*);
+
+	int buttonSize;
+	int width;
+	int height;
+
+	class CancelButton : public Button
+	{
+	public:
+		CancelButton(const String& name);
+		~CancelButton();
+	private:
+		void paintButton(Graphics& g, bool isMouseOver, bool isButtonDown) override;
+	};
+
+private:
+	ScopedPointer<CancelButton> cancelButton;
+	MatlabInterface* interface;
+
+	void run() override;
+};
+
+class MatlabInterfaceEditor : public GenericEditor, 
+	public ComboBox::Listener, 
+	public Button::Listener, 
+	public Timer
 {
 public:
 
@@ -46,7 +79,11 @@ public:
 
 private:
 
+	int count;
+
 	MatlabInterface* interface;
+
+	ScopedPointer<ConnectionViewer> viewer;
 
 	std::unique_ptr<UtilityButton> connectButton;
 

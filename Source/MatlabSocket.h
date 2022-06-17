@@ -18,11 +18,12 @@ public:
 
 	int selectedChannel;
 
+	ScopedPointer<StreamingSocket> connection;
+
 private:
 
 	bool sentHeader;
 	int bufferSize;
-	ScopedPointer<StreamingSocket> connection;
 	ScopedPointer<StreamingSocket> socket;
 	int port;
 	bool connected; //true if client (Matlab) has connected
