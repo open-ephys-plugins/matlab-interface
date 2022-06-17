@@ -41,7 +41,7 @@ public:
 	void setSelectedChannel(int channel);
 	int getSelectedChannel() { return selectedChannel; };
 
-	int connect();
+	void connect();
 
 	void process(AudioSampleBuffer& buffer) override;
 

@@ -24,7 +24,7 @@ MatlabInterface::~MatlabInterface()
 	socketThread->waitForThreadToExit(2000);
 }
 
-int MatlabInterface::connect()
+void MatlabInterface::connect()
 {
 	String port = getParameter("port_number")->getValue();
 	String host = getParameter("host_address")->getValue();
