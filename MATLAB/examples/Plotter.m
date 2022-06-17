@@ -7,6 +7,7 @@ classdef Plotter < GenericProcessor
 
 	properties
 		hPlot;
+        fig;
     end
     
     properties
@@ -27,12 +28,16 @@ classdef Plotter < GenericProcessor
             xLabel = 'Sample Count';
             yLabel = 'Voltage [uV]';
 
+            self.fig = gcf;
+
 			clf; cla; 
 			self.hPlot = plot(0,0); drawnow; hold on;
+
 			title(plotTitle);
 			xlabel(xLabel); ylabel(yLabel);
 			xlim(self.xAxisRange); ylim(self.yAxisRange);
-            
+
+
 			self.process();
 
 		end
@@ -46,7 +51,7 @@ classdef Plotter < GenericProcessor
 			lastSample = 0;
             xAxisSize = self.xAxisRange(2);
             
-			while ishandle(self.hPlot) 
+			while 1
 
 				process@GenericProcessor(self); 
 
@@ -68,6 +73,10 @@ classdef Plotter < GenericProcessor
                 if lastSample > xAxisSize
                     lastSample = 0;
                     cla; self.hPlot = plot(0,0); drawnow; 
+                end
+
+                if get(self.fig, 'CurrentCharacter') == 'q'
+                    break;
                 end
 
             end
