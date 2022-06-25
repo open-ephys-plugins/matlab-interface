@@ -31,39 +31,23 @@ The Matlab API is centered around a GenericProcessor class that encapsulates an 
         end
 
         methods 
-
             function self = Plotter(host, port)
-                
                 self = self@GenericProcessor(host, port);
-
                 %Initialize any variables here (see examples)
-
                 self.process();
-
             end
-
         end
 
         methods (Access = protected)
-
             function process(self)
-                
                 while (true) 
-
                     process@GenericProcessor(self); 
-
                     numSamples = self.dataIn.numSamplesFetched;
-                    
                     data = self.dataIn.continuous(1:end);
-
                     %Do whatever you want with the data here (see examples)
-
                 end
-
             end
-
         end
-
     end
 
 Here's an example of a simple peak detection algorithm:
@@ -75,32 +59,21 @@ Here's an example of a simple peak detection algorithm:
         end
         
         methods 
-
             function self = PeakDetector(host, port)
-                
                 self = self@GenericProcessor(host, port);
                 self.process();
-
             end
-
         end
 
         methods (Access = protected)
-
             function process(self)
-                
                 while (true)
                     process@GenericProcessor(self); 
-                    
                     yd = diff(self.dataIn.continuous)./diff(1:self.dataIn.numSamplesFetched);
                     self.peaks = find(~yd);
-                    
                 end
-
             end
-
         end
-
     end
 
 And a simple threshold detector... 
@@ -112,34 +85,21 @@ And a simple threshold detector...
         end
     
         methods 
-
             function self = ThresholdDetector(host, port)
-                
                 self = self@GenericProcessor(host, port);
-                
                 self.thresholdValue = 3.2; %V
-                
                 self.process();
-
             end
-
         end
 
         methods (Access = protected)
-
             function process(self)
-                
                 while (true)
-                    
                     process@GenericProcessor(self); 
                     k = find(self.dataIn.continuous > self.thresholdValue);
-
                 end
-
             end
-
         end
-
     end
 
 
@@ -176,9 +136,7 @@ And here's an example of a Plotter that plots the incoming data to a figure in r
                 xlim(self.xAxisRange); ylim(self.yAxisRange);
                 
                 self.process();
-
             end
-
         end
 
         methods (Access = protected)
@@ -211,13 +169,9 @@ And here's an example of a Plotter that plots the incoming data to a figure in r
                         lastSample = 0;
                         cla; self.hPlot = plot(0,0); drawnow; 
                     end
-
                 end
-
             end
-
         end
-
     end
 
 
