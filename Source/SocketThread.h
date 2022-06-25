@@ -38,11 +38,13 @@ class MatlabSocket;
 class SocketThread : public Thread
 {
 public:
+
+	/** Constructor */
 	SocketThread();
+
+	/** Destructor */
 	~SocketThread();
-	//void setFileComponents(File rootFolder, int experimentNumber, int recordingNumber);
-	//void setChannelMap(const Array<int>& channels);
-	//void setQueuePointers(DataQueue* data, EventMsgQueue* events, SpikeMsgQueue* spikes);
+
 	void setQueuePointers(DataQueue* data);
 	void setSelectedChannel(int channel);
 
@@ -53,9 +55,6 @@ public:
 	void setFirstBlockFlag(bool state);
 	void forceCloseFiles();
 
-	//TODO: startChannelBlock;
-	//TODO: endChannelBlock;
-
 	std::unique_ptr<MatlabSocket> socket;
 
 private:
@@ -65,8 +64,6 @@ private:
 	Array<int> m_channelArray;
 
 	DataQueue* m_dataQueue;
-	//EventMsgQueue* m_eventQueue;
-	//SpikeMsgQueue *m_spikeQueue;
 
 	std::atomic<bool> m_receivedFirstBlock;
 	std::atomic<bool> m_cleanExit;
@@ -75,6 +72,7 @@ private:
 	int m_experimentNumber;
 	int m_recordingNumber;
 	int m_numChannels;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SocketThread);
 };
 

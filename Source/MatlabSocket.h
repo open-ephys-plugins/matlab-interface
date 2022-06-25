@@ -5,15 +5,31 @@
 
 class MatlabInterface;
 
-//A juce::StreamingSocket class optimized for streaming data to Matlab
+/** 
+ 
+	A Juce StreamingSocket class optimized for streaming data to Matlab
+ 
+ */
 class MatlabSocket
 {
 public:
+
+	/** Constructor */
 	MatlabSocket();
+
+	/** Destructor */
 	~MatlabSocket();
+
+	/** Listen at port and host*/
 	int listen(int port, String host);
+
+	/** Write header to connected socket */
 	int writeHeader();
+
+	/** Write outgoin data for one channel */
 	int writeData(int channel, const float* buffer, int size, int idx);
+
+	/** Read incoming data */
 	int readData();
 
 	int selectedChannel;

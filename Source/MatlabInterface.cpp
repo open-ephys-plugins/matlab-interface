@@ -11,7 +11,7 @@ MatlabInterface::MatlabInterface()
 
 	addStringParameter(Parameter::GLOBAL_SCOPE, "host_address", "Set host address", "127.0.0.1", true);
     addStringParameter(Parameter::GLOBAL_SCOPE, "port_number", "Set port number", "1234", true);
-	addSelectedChannelsParameter(Parameter::STREAM_SCOPE, "selected_channel", "The continuous channel to analyze", 1);
+	addSelectedChannelsParameter(Parameter::STREAM_SCOPE, "Channel", "The continuous channel to analyze", 1);
 
 }
 
@@ -24,13 +24,25 @@ MatlabInterface::~MatlabInterface()
 	socketThread->waitForThreadToExit(2000);
 }
 
-void MatlabInterface::connect()
+bool MatlabInterface::connect()
 {
 	String port = getParameter("port_number")->getValue();
 	String host = getParameter("host_address")->getValue();
 
+	LOGC("Connecting to ", port, ":", host);
+
 	if (socketThread->openSocket(port.getIntValue(), host) > 0)
+	{
 		connected = true;
+		LOGC("CONNECTED.");
+	}
+	else
+	{
+		connected = false;
+		LOGC("NOT CONNECTED.");
+	}
+
+	return connected;
 }
 
 void MatlabInterface::setSelectedChannel(int channel)
@@ -47,7 +59,7 @@ AudioProcessorEditor* MatlabInterface::createEditor()
 
 void MatlabInterface::parameterValueChanged(Parameter* param)
 {
-	if (param->getName().equalsIgnoreCase("selected_channel"))
+	if (param->getName().equalsIgnoreCase("Channel"))
     {
         int localIndex = (int)param->getValue();
         int globalIndex = getDataStream(param->getStreamId())->getContinuousChannels()[localIndex]->getGlobalIndex();
@@ -62,7 +74,6 @@ void MatlabInterface::process(AudioSampleBuffer& buffer)
 	if (!connected)
 		return;
 
-	//checkForEvents(false);
 	const int nChannels = buffer.getNumChannels();
 
 	if (!socketThread->isThreadRunning())
@@ -86,13 +97,11 @@ void MatlabInterface::process(AudioSampleBuffer& buffer)
 
 }
 
-void MatlabInterface::handleTTLEvent(TTLEventPtr event)
-{
-    //TODO
-}
 
 void MatlabInterface::updateSettings()
 {
+	isEnabled = connected;
+
 	for (auto stream : getDataStreams())
-        parameterValueChanged(stream->getParameter("selected_channel"));
+        parameterValueChanged(stream->getParameter("Channel"));
 }

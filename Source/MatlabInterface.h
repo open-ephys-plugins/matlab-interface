@@ -28,31 +28,32 @@
 #define CHANNELS_PER_THREAD		384
 
 
-//
 class MatlabInterface : public GenericProcessor
 {
 public:
+
+	/** Constructor */
 	MatlabInterface();
+
+	/** Destructor */
 	~MatlabInterface();
 
-	bool hasEditor() const { return true; }
+	/** Create custom editor */
 	AudioProcessorEditor* createEditor() override;
 
+	/** Set currently selected channel */
 	void setSelectedChannel(int channel);
+
+	/** Get currently selected channel */
 	int getSelectedChannel() { return selectedChannel; };
 
-	void connect();
+	/** Check for Matlab instance at specified address/port */
+	bool connect();
 
-	void process(AudioSampleBuffer& buffer) override;
+	/** Stream continuous channel to Matlab */
+	void process(AudioBuffer<float>& buffer) override;
 
-	void handleTTLEvent(TTLEventPtr event) override;
-
-	/** Saving custom settings to XML. */
-	//void saveCustomParametersToXml(XmlElement* parentElement) override;
-
-	/** Load custom settings from XML*/
-	//void loadCustomParametersFromXml() override;
-
+	/** Update selected channel for each stream */
 	void updateSettings() override;
 	
 	/** Called whenever a parameter's value is changed (called by GenericProcessor::setParameter())*/

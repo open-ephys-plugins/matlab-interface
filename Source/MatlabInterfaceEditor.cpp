@@ -25,7 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MatlabInterfaceEditor.h"
 #include "MatlabInterface.h"
 
-ConnectionViewer::ConnectionViewer(MatlabInterface* parentNode) : Component(), Thread("ConnectionViewer"),
+ConnectionViewer::ConnectionViewer(MatlabInterface* parentNode) : 
+	Component(), Thread("ConnectionViewer"),
 	interface(parentNode) 
 {
 
@@ -36,7 +37,7 @@ ConnectionViewer::ConnectionViewer(MatlabInterface* parentNode) : Component(), T
 	setSize(width, height);
 	setColour(ColourSelector::backgroundColourId, Colours::transparentBlack);
 
-	startThread();
+	isConnected = interface->connect();
 
 };
 
@@ -50,12 +51,9 @@ void ConnectionViewer::buttonClicked(Button* button) {};
 void ConnectionViewer::run()
 {
 
-	while (!threadShouldExit())
-	{
-		LOGC("Waiting for connection...");
-		interface->connect();
-		signalThreadShouldExit();
-	}
+	LOGC("Waiting for connection...");
+	
+
 }
 
 MatlabInterfaceEditor::MatlabInterfaceEditor(MatlabInterface* parentNode)
@@ -77,7 +75,7 @@ MatlabInterfaceEditor::MatlabInterfaceEditor(MatlabInterface* parentNode)
 	connectButton->addListener(this);
 	addAndMakeVisible(connectButton.get());
 
-	addSelectedChannelsParameterEditor("selected_channel", 75, 100);
+	addSelectedChannelsParameterEditor("Channel", 75, 100);
 
 	count = 0;
 }
@@ -85,44 +83,20 @@ MatlabInterfaceEditor::MatlabInterfaceEditor(MatlabInterface* parentNode)
 MatlabInterfaceEditor::~MatlabInterfaceEditor()
 {
 
-	if (viewer)
-	{
-		if (interface->socketThread->socket->connection)
-			interface->socketThread->socket->connection->close();
-		viewer->signalThreadShouldExit();
-		viewer->waitForThreadToExit(2000);
-	}
 }
 
-void MatlabInterfaceEditor::updateSettings()
-{
-
-}
-
-void MatlabInterfaceEditor::timerCallback()
-{
-	if (viewer->isThreadRunning())
-	{
-		connectButton->setButtonText("wait: " + String(count));
-	}
-	else
-	{
-		stopTimer();
-	}
-
-}
 
 void MatlabInterfaceEditor::buttonClicked(Button* button)
 {
+	
 	viewer = new ConnectionViewer(interface);
-	button->setEnabled(false);
-	//startTimer(200);
-}
 
-void MatlabInterfaceEditor::comboBoxChanged(ComboBox *combo)
-{
-	interface->setSelectedChannel(combo->getSelectedItemIndex());
-}
+	if (viewer->isConnected)
+	{
+		connectButton->setEnabled(false);
+	}
 
+	CoreServices::updateSignalChain(this);
+}
 
 

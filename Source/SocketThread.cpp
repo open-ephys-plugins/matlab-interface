@@ -49,10 +49,19 @@ void SocketThread::setSelectedChannel(int channel)
 
 int SocketThread::openSocket(int port, String host)
 {
+	LOGC("Opening socket...");
+	if (socket->listen(port, host) == 1)
+	{
+		LOGC("Writing header...");
+		socket->writeHeader();
 
-	socket->listen(port, host);
-	socket->writeHeader();
-	return 1;
+		return 1;
+	}
+	else {
+		return 0;
+	}
+	
+	
 }
 
 void SocketThread::setFirstBlockFlag(bool didReceiveFirstBlock)

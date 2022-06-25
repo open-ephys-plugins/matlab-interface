@@ -37,45 +37,42 @@ class ConnectionViewer :
 	public Button::Listener
 {
 public:
+
+	/** Constructor */
 	ConnectionViewer(MatlabInterface* parentNode);
+
+	/** Destructor */
 	~ConnectionViewer();
+
+	/** Respond to button clicks*/
 	void buttonClicked(Button*);
 
 	int buttonSize;
 	int width;
 	int height;
 
-	class CancelButton : public Button
-	{
-	public:
-		CancelButton(const String& name);
-		~CancelButton();
-	private:
-		void paintButton(Graphics& g, bool isMouseOver, bool isButtonDown) override;
-	};
+	bool isConnected;
 
 private:
-	ScopedPointer<CancelButton> cancelButton;
 	MatlabInterface* interface;
 
+	/** Run connection thread*/
 	void run() override;
 };
 
-class MatlabInterfaceEditor : public GenericEditor, 
-	public ComboBox::Listener, 
-	public Button::Listener, 
-	public Timer
+class MatlabInterfaceEditor : public GenericEditor,
+	public Button::Listener
 {
 public:
 
+	/** Constructor */
 	MatlabInterfaceEditor(MatlabInterface* parentNode);
+
+	/** Destructor */
 	virtual ~MatlabInterfaceEditor();
 
-	void updateSettings();
-	void timerCallback();
-
+	/** Responds to "connect" button */
 	void buttonClicked(Button* button);
-	void comboBoxChanged(ComboBox* combo);
 
 private:
 

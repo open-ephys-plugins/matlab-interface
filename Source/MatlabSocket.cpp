@@ -22,8 +22,17 @@ int MatlabSocket::listen(int port, String host)
 
 	connection = new StreamingSocket();
 	connection->createListener(port); //empty string means use localhost address (127.0.0.1)
+	
+	if (connection->waitUntilReady(false, 500) != 1)
+	{
+		LOGC("Could not connect.");
+		connection = nullptr;
+		return -2;
+	}
+
 	LOGD("Waiting for next connection..."); 
 	socket = connection->waitForNextConnection();
+	
 	if (socket != nullptr)
 	{
 		LOGD("Socket is ", (socket->isConnected() ? "connected!" : " NOT connected! "));
