@@ -20,9 +20,9 @@ To initialize the connection on the Matlab side, you will need to call your gene
 
 ### Matlab API
 
-In order to process the incoming data in Matlab, you will need to leverage the included Matlab API. The API was designed specifically to introduce/reinforce object oriented programming and to encourage Matlab evangelists to consider developing plugins in C++. 
+In order to process the incoming data in Matlab, you will need to leverage the included Matlab API. The API was designed specifically to introduce/reinforce object-oriented programming and to encourage Matlab evangelists to consider developing plugins in C++. 
 
-The Matlab API is centered around a GenericProcessor class that encapsulates an Open Ephys data processor. The idea is to write your own class that inherits and extends a Generic Processor. A starting template is included below: 
+The Matlab API is centered around a `GenericProcessor` class that encapsulates an Open Ephys data processor. The idea is to write your own class that inherits and extends `GenericProcessor`. A starting template is included below: 
 
 ```matlab
 classdef MyClass < GenericProcessor
