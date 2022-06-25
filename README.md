@@ -2,7 +2,7 @@
 
 ![matlab-interface-screenshot](Resources/matlab-interface.png)
 
-Streams one channel of continuous data from the Open Ephys GUI to a live Matlab session. A Matlab API  allows seamless processing of the incoming data in real-time.
+Streams one channel of continuous data from the Open Ephys GUI to a live Matlab session. A Matlab API  allows seamless processing of the incoming data in real time.
 
 
 ## Installation
