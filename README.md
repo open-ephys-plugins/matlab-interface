@@ -24,156 +24,162 @@ In order to process the incoming data in Matlab, you will need to leverage the i
 
 The Matlab API is centered around a GenericProcessor class that encapsulates an Open Ephys data processor. The idea is to write your own class that inherits and extends a Generic Processor. A starting template is included below: 
 
-    classdef MyClass < GenericProcessor
-	
-        properties
-            %define any variables you want to keep track of here (see examples)
-        end
+```matlab
+classdef MyClass < GenericProcessor
 
-        methods 
-            function self = Plotter(host, port)
-                self = self@GenericProcessor(host, port);
-                %Initialize any variables here (see examples)
-                self.process();
-            end
-        end
+    properties
+        %define any variables you want to keep track of here (see examples)
+    end
 
-        methods (Access = protected)
-            function process(self)
-                while (true) 
-                    process@GenericProcessor(self); 
-                    numSamples = self.dataIn.numSamplesFetched;
-                    data = self.dataIn.continuous(1:end);
-                    %Do whatever you want with the data here (see examples)
-                end
+    methods 
+        function self = Plotter(host, port)
+            self = self@GenericProcessor(host, port);
+            %Initialize any variables here (see examples)
+            self.process();
+        end
+    end
+
+    methods (Access = protected)
+        function process(self)
+            while (true) 
+                process@GenericProcessor(self); 
+                numSamples = self.dataIn.numSamplesFetched;
+                data = self.dataIn.continuous(1:end);
+                %Do whatever you want with the data here (see examples)
             end
         end
     end
+end
+```
 
 Here's an example of a simple peak detection algorithm:
 
-    classdef PeakDetector < GenericProcessor
+```matlab
+classdef PeakDetector < GenericProcessor
 
-        properties
-            peaks;
+    properties
+        peaks;
+    end
+    
+    methods 
+        function self = PeakDetector(host, port)
+            self = self@GenericProcessor(host, port);
+            self.process();
         end
-        
-        methods 
-            function self = PeakDetector(host, port)
-                self = self@GenericProcessor(host, port);
-                self.process();
-            end
-        end
+    end
 
-        methods (Access = protected)
-            function process(self)
-                while (true)
-                    process@GenericProcessor(self); 
-                    yd = diff(self.dataIn.continuous)./diff(1:self.dataIn.numSamplesFetched);
-                    self.peaks = find(~yd);
-                end
+    methods (Access = protected)
+        function process(self)
+            while (true)
+                process@GenericProcessor(self); 
+                yd = diff(self.dataIn.continuous)./diff(1:self.dataIn.numSamplesFetched);
+                self.peaks = find(~yd);
             end
         end
     end
+end
+```
 
 And a simple threshold detector... 
 
-    classdef ThresholdDetector < GenericProcessor
+```matlab
+classdef ThresholdDetector < GenericProcessor
 
-        properties
-            thresholdValue;
-        end
-    
-        methods 
-            function self = ThresholdDetector(host, port)
-                self = self@GenericProcessor(host, port);
-                self.thresholdValue = 3.2; %V
-                self.process();
-            end
-        end
+    properties
+        thresholdValue;
+    end
 
-        methods (Access = protected)
-            function process(self)
-                while (true)
-                    process@GenericProcessor(self); 
-                    k = find(self.dataIn.continuous > self.thresholdValue);
-                end
-            end
+    methods 
+        function self = ThresholdDetector(host, port)
+            self = self@GenericProcessor(host, port);
+            self.thresholdValue = 3.2; %V
+            self.process();
         end
     end
 
+    methods (Access = protected)
+        function process(self)
+            while (true)
+                process@GenericProcessor(self); 
+                k = find(self.dataIn.continuous > self.thresholdValue);
+            end
+        end
+    end
+end
+```
 
 And here's an example of a Plotter that plots the incoming data to a figure in real-time. 
 
-    classdef Plotter < GenericProcessor
+```matlab
+classdef Plotter < GenericProcessor
 
-        properties
-            hPlot;
+    properties
+        hPlot;
+    end
+    
+    properties
+        xAxisRange;
+        yAxisRange;
+    end
+
+    methods 
+
+        function self = Plotter(host, port)
+            
+            self = self@GenericProcessor(host, port);
+            
+            self.xAxisRange = [0,80000];
+            self.yAxisRange = [-1000 1000];
+            
+            plotTitle = 'Open Ephys Data Stream';
+            xLabel = 'Sample Count';
+            yLabel = 'Voltage [uV]';
+
+            clf; cla; 
+            self.hPlot = plot(0,0); drawnow; hold on;
+            title(plotTitle);
+            xlabel(xLabel); ylabel(yLabel);
+            xlim(self.xAxisRange); ylim(self.yAxisRange);
+            
+            self.process();
         end
-        
-        properties
-            xAxisRange;
-            yAxisRange;
-        end
+    end
 
-        methods 
+    methods (Access = protected)
 
-            function self = Plotter(host, port)
-                
-                self = self@GenericProcessor(host, port);
-                
-                self.xAxisRange = [0,80000];
-                self.yAxisRange = [-1000 1000];
-                
-                plotTitle = 'Open Ephys Data Stream';
-                xLabel = 'Sample Count';
-                yLabel = 'Voltage [uV]';
+        function process(self)
+            
+            lastSample = 0;
+            xAxisSize = self.xAxisRange(2);
+            
+            while ishandle(self.hPlot) 
 
-                clf; cla; 
-                self.hPlot = plot(0,0); drawnow; hold on;
-                title(plotTitle);
-                xlabel(xLabel); ylabel(yLabel);
-                xlim(self.xAxisRange); ylim(self.yAxisRange);
-                
-                self.process();
-            end
-        end
+                process@GenericProcessor(self); 
 
-        methods (Access = protected)
+                numSamples = self.dataIn.numSamplesFetched;
 
-            function process(self)
-                
-                lastSample = 0;
-                xAxisSize = self.xAxisRange(2);
-                
-                while ishandle(self.hPlot) 
+                if lastSample + numSamples > xAxisSize
+                    xData = (lastSample+1):xAxisSize;
+                    yData = self.dataIn.continuous(1:(xAxisSize-lastSample));
+                else
+                    xData = (lastSample+1):(lastSample+numSamples);
+                    yData = self.dataIn.continuous;
+                end
 
-                    process@GenericProcessor(self); 
+                self.hPlot = plot(xData,yData); drawnow;
+                set(self.hPlot, 'XData', xData, 'YData', yData); 
 
-                    numSamples = self.dataIn.numSamplesFetched;
-
-                    if lastSample + numSamples > xAxisSize
-                        xData = (lastSample+1):xAxisSize;
-                        yData = self.dataIn.continuous(1:(xAxisSize-lastSample));
-                    else
-                        xData = (lastSample+1):(lastSample+numSamples);
-                        yData = self.dataIn.continuous;
-                    end
-
-                    self.hPlot = plot(xData,yData); drawnow;
-                    set(self.hPlot, 'XData', xData, 'YData', yData); 
-
-                    %TODO: Currently ignores (doesn't plot) samples that overshoot x-axis range
-                    lastSample = lastSample + numSamples;
-                    if lastSample > xAxisSize
-                        lastSample = 0;
-                        cla; self.hPlot = plot(0,0); drawnow; 
-                    end
+                %TODO: Currently ignores (doesn't plot) samples that overshoot x-axis range
+                lastSample = lastSample + numSamples;
+                if lastSample > xAxisSize
+                    lastSample = 0;
+                    cla; self.hPlot = plot(0,0); drawnow; 
                 end
             end
         end
     end
-
+end
+```
 
 Once you have designed your class, you can call it from the Matlab command window using `MyClass(host,port)`, where host and port need to match the entries specified in the MatlabEngine editor in the OpenEphys GUI. 
 
