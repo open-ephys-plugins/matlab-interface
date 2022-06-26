@@ -2,7 +2,7 @@
 
 ![matlab-interface-screenshot](Resources/matlab-interface.png)
 
-Streams one channel of continuous data from the Open Ephys GUI to a live Matlab session. A Matlab API  allows seamless processing of the incoming data in real time.
+Streams one channel of continuous data from the Open Ephys GUI to a live Matlab session. A Matlab API allows seamless processing of the incoming data in real time.
 
 
 ## Installation
@@ -14,9 +14,9 @@ Streams one channel of continuous data from the Open Ephys GUI to a live Matlab 
 
 Once installed, the plugin will appear as 'Matlab Interface' in the 'Filters' section of the 'Processor List' of the Open Ephys GUI. The plugin can be placed after any source, filter, or sink in the signal chain and will stream the data output by the preceding processor into your Matlab session. 
 
-Before starting data acquisition, you will need to press the 'Connect' button in the editor to initiate a connection between Open Ephys and your Matlab session. The plugin will open a socket using the IP and Port address listed in the Matlab Interface editor.
+Before starting data acquisition, you will need to press the 'Connect' button in the editor to initiate a connection between the plugin and your Matlab session. The plugin will open a socket using the IP and Port address listed in the Matlab Interface editor.
 
-To initialize the connection on the Matlab side, you will need to call your generated script from Matlab following the instructions below. Once the connection has been initiated on both sides, pressing the Play button in the Open Ephys GUI will automatically stream the incoming data to Matlab. 
+To initialize the connection on the Matlab side, you will need to call your generated script from Matlab following the instructions below. Once the connection has been initiated on both sides, pressing the Play button in the Open Ephys GUI will automatically stream the incoming data to Matlab, and then back to the GUI for further processing. 
 
 ### Matlab API
 
@@ -252,4 +252,4 @@ Running the `ALL_BUILD` scheme will compile the plugin; running the `INSTALL` sc
 
 ### Questions and Troubleshooting
 
-If you have any questions and/or issues regarding this plugin, please reach out to pavel@open-ephys.org.
+If you have any questions and/or issues regarding this plugin, please open an Issue in this repository or reach out to pavel@open-ephys.org.
