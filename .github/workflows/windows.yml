@@ -20,7 +20,7 @@ jobs:
         package: "open-ephys-lib"
       run: |
         cd ../..
-        git clone https://github.com/open-ephys/plugin-GUI.git --branch development-juce6
+        git clone https://github.com/open-ephys/plugin-GUI.git --branch main
         cd plugin-GUI/Build
         cmake -G "Visual Studio 16 2019" -A x64 .. 
         mkdir Release && cd Release
@@ -54,16 +54,7 @@ jobs:
         new_plugin_ver=$tag-API$plugin_api
         mkdir plugins
         cp $build_dir/*.dll plugins
-        if [ -d "Resources" ]
-        then
-          mkdir shared
-          cp Resources/*.dll shared
-        fi
         zipfile=${package}_${new_plugin_ver}.zip
         powershell Compress-Archive -Path "plugins" -DestinationPath ${zipfile}
-        if [ -d "shared" ]
-        then
-          powershell Compress-Archive -U -Path "shared" -DestinationPath ${zipfile}
-        fi
         curl -H "X-JFrog-Art-Api:$artifactoryApiKey" -T $zipfile "https://openephys.jfrog.io/artifactory/MatlabInterface-plugin/windows/$zipfile"
       shell: bash
