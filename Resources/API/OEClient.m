@@ -22,7 +22,7 @@ classdef OEClient < handle
 
     properties (Constant)
         END_OF_MESSAGE = '~';
-        MAX_CONNECT_ATTEMPTS = 5;
+        MAX_CONNECT_ATTEMPTS = 50;
         WRITE_MSG_SIZE_IN_BYTES = 1024;
     end
 
@@ -48,16 +48,13 @@ classdef OEClient < handle
         end
 
         function line = read(self)
-
+%             fprintf('before readline\n');
             line = self.buffered_reader.readLine;
-
+%             fprintf('after readline\n');
         end
 
         function self = write(self, message)
             
-            fprintf("Size of msg: %d\n", length(message));
-            fprintf("Message: %s\n", message);
-   
             if (length(message)/2 == self.WRITE_MSG_SIZE_IN_BYTES)
                 self.stream_writer.writeBytes(message);
                 self.stream_writer.flush;
