@@ -25,10 +25,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "SocketThread.h"
 
 
-SocketThread::SocketThread() :
+SocketThread::SocketThread(MatlabInterface* parentNode) :
 Thread("Socket Thread"),
 m_receivedFirstBlock(false),
-m_cleanExit(true)
+m_cleanExit(true),
+matlabInterface(parentNode)
 {
 	socket = std::make_unique<MatlabSocket>();
 }
@@ -37,9 +38,11 @@ SocketThread::~SocketThread()
 {
 }
 
-void SocketThread::setQueuePointers(DataQueue* data)
+void SocketThread::setQueuePointers(DataQueue* data, EventMsgQueue* events, SpikeMsgQueue* spikes)
 {
 	m_dataQueue = data;
+	m_eventQueue = events;
+	m_spikeQueue = spikes;
 }
 
 void SocketThread::setSelectedChannel(int channel)
@@ -72,9 +75,12 @@ void SocketThread::setFirstBlockFlag(bool didReceiveFirstBlock)
 
 void SocketThread::run()
 {
+	//LOGD("socketthread::run");
 
 	const AudioSampleBuffer& dataBuffer = m_dataQueue->getAudioBufferReference();
 	bool closeEarly = true;
+
+
 	//1-Wait until the first block has arrived, so we can align the timestamps
 	while (!m_receivedFirstBlock && !threadShouldExit())
 	{
@@ -100,7 +106,7 @@ void SocketThread::run()
 
 void SocketThread::writeData(const AudioSampleBuffer& dataBuffer, int maxSamples, int maxEvents, int maxSpikes, bool lastBlock)
 {
-
+	//stream continuous data, disabled
 	Array<int64> timestamps;
 	Array<CircularBufferIndexes> idx;
 	m_dataQueue->startRead(idx, timestamps, maxSamples);
@@ -110,14 +116,49 @@ void SocketThread::writeData(const AudioSampleBuffer& dataBuffer, int maxSamples
 	{
 		if (idx[chan].size1 > 0)
 		{
-			socket->writeData(chan, dataBuffer.getReadPointer(chan, idx[chan].index1), idx[chan].size1, 1);
+			//socket->writeData(chan, dataBuffer.getReadPointer(chan, idx[chan].index1), idx[chan].size1, 1);
 			if (idx[chan].size2 > 0)
 			{
 				timestamps.set(chan, timestamps[chan] + idx[chan].size1);
-				socket->writeData(chan, dataBuffer.getReadPointer(chan, idx[chan].index2), idx[chan].size2, 2);
+				//socket->writeData(chan, dataBuffer.getReadPointer(chan, idx[chan].index2), idx[chan].size2, 2);
 			}
 		}
 	}
-	m_dataQueue->stopRead();
+	m_dataQueue->stopRead(); //to prevent memory overflow
+	
+
+	//stream spike data, enabled
+	std::vector<SpikeMessagePtr> spikes;
+	int nSpikes = m_spikeQueue->getEvents(spikes, BLOCK_MAX_WRITE_SPIKES);
+
+	memset(channels, 0, sizeof(channels));
+	memset(ids, 0, sizeof(ids));
+	memset(sampleIdxs, 0, sizeof(sampleIdxs));
+
+	//if (nSpikes > 0) { LOGD("Nspikes = ", nSpikes); }
+	for (int sp = 0; sp < nSpikes; ++sp)
+	{
+		
+		if (spikes[sp] != nullptr)
+		{
+
+			const Spike& spike = spikes[sp]->getData();
+			const SpikeChannel* chan = spike.getChannelInfo();
+			int spikeIndex = matlabInterface->getIndexOfMatchingChannel(chan);
+
+			const Spike* spikedata = &spikes[sp]->getData();
+			int64 sampleIdx = spikedata->getSampleNumber();
+			uint16 sortedId = spikedata->getSortedId();
+			
+			//LOGD("spike index = ", spikeIndex+1);
+			//LOGD("sorted id = ", sortedId);
+
+			channels[sp] = spikeIndex+1;
+			ids[sp] = sortedId;
+			sampleIdxs[sp] = sampleIdx;
+
+		}
+	}
+	socket->writeSpike(channels, ids, sampleIdxs, nSpikes);
 
 }

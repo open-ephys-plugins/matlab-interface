@@ -3,7 +3,9 @@
 MatlabInterface::MatlabInterface() 
 	: GenericProcessor("Matlab Interface"),
 	dataQueue(std::make_unique<DataQueue>(WRITE_BLOCK_LENGTH, DATA_BUFFER_NBLOCKS)),
-	socketThread(std::make_unique<SocketThread>()),
+	eventQueue(std::make_unique<EventMsgQueue>(EVENT_BUFFER_NEVENTS)),
+    spikeQueue(std::make_unique<SpikeMsgQueue>(SPIKE_BUFFER_NSPIKES)),
+	socketThread(std::make_unique<SocketThread>(this)),
 	connected(false),
 	selectedChannel(0)
 {
@@ -70,16 +72,17 @@ void MatlabInterface::parameterValueChanged(Parameter* param)
 
 void MatlabInterface::process(AudioSampleBuffer& buffer)
 {
-
 	if (!connected)
 		return;
+
+	checkForEvents(true);
 
 	const int nChannels = buffer.getNumChannels();
 
 	if (!socketThread->isThreadRunning())
 	{
 		dataQueue->setChannels(nChannels);
-		socketThread->setQueuePointers(dataQueue.get());
+		socketThread->setQueuePointers(dataQueue.get(), eventQueue.get(), spikeQueue.get());
 		socketThread->setFirstBlockFlag(true);
 		socketThread->setSelectedChannel(selectedChannel);
 		socketThread->startThread();
@@ -101,7 +104,23 @@ void MatlabInterface::process(AudioSampleBuffer& buffer)
 void MatlabInterface::updateSettings()
 {
 	isEnabled = connected;
-
 	for (auto stream : getDataStreams())
         parameterValueChanged(stream->getParameter("Channel"));
+}
+
+void MatlabInterface::writeSpike(const Spike *spike, const SpikeChannel *spikeElectrode)
+{
+	int electrodeIndex = getIndexOfMatchingChannel(spikeElectrode);
+
+	if (electrodeIndex >= 0)
+		spikeQueue->addEvent(*spike, spike->getSampleNumber(), electrodeIndex);
+
+}
+
+void MatlabInterface::handleSpike(SpikePtr spike)
+{
+	//since we acquire spike data periodically, there's no need to send timestamp data 
+	//spike->setTimestampInSeconds(synchronizer.convertSampleNumberToTimestamp(spike->getStreamId(),spike->getSampleNumber()));
+	writeSpike(spike, spike->getChannelInfo());
+
 }

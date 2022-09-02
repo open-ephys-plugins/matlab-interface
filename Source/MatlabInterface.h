@@ -55,6 +55,9 @@ public:
 
 	/** Update selected channel for each stream */
 	void updateSettings() override;
+
+	void writeSpike(const Spike * spike, const SpikeChannel * spikeElectrode);
+
 	
 	/** Called whenever a parameter's value is changed (called by GenericProcessor::setParameter())*/
     void parameterValueChanged(Parameter* param) override;
@@ -68,8 +71,12 @@ private:
 	int selectedChannel;
 
 	std::unique_ptr<DataQueue> dataQueue;
+	std::unique_ptr<EventMsgQueue> eventQueue;
+	std::unique_ptr<SpikeMsgQueue> spikeQueue;
 
 	std::vector<float> matlab_data;
+
+	void handleSpike(SpikePtr spike) override;
 
 };
 
