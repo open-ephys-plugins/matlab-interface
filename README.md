@@ -58,7 +58,7 @@ Once you have designed your class, you can call it from the Matlab command windo
 
 However, for those who are not familiar with object-oriented programming of matlab, simple scripts are available using the API provided. Here is an example that prints information of every spike every 50ms:
 
-```
+```matlab
 host='127.0.0.1'
 port=1234
 processor=GenericProcessor(host, port);
