@@ -28,8 +28,19 @@ classdef GenericProcessor < handle
 
 		function data=process(self)
             self.client.write(self.dataOut);
+            t=tic();
+            while toc(t)<0.002
+            end
             data=self.client.read();
             data=char(data);
+%             fprintf("%s;\n",t);
+            
+% 			self.dataIn.continuous = t; %#ok<*ST2NM>
+%             self.packetsFetched = self.packetsFetched + 1;
+% 			self.dataIn.numSamplesFetched = length(self.dataIn.continuous);
+%             lastFetch = self.dataIn.numSamplesFetched/toc(self.timer);
+%             self.dataRate = (lastFetch + self.packetsFetched * self.dataRate ) / (self.packetsFetched + 1);
+%             fprintf("Data rate: %1.2f\n", self.dataRate);
             self.timer = tic;
 		end
 
