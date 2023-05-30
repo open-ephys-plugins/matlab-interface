@@ -60,12 +60,16 @@ AudioProcessorEditor* MatlabInterface::createEditor()
 void MatlabInterface::parameterValueChanged(Parameter* param)
 {
 	if (param->getName().equalsIgnoreCase("Channel"))
-    {
-        int localIndex = (int)param->getValue();
-        int globalIndex = getDataStream(param->getStreamId())->getContinuousChannels()[localIndex]->getGlobalIndex();
-		setSelectedChannel(globalIndex);
-    } 
+	{
+		Array<var>* array = param->getValue().getArray();
 
+		if (array->size() > 0)
+		{
+			int localIndex = int(array->getFirst());
+			int globalIndex = getDataStream(param->getStreamId())->getContinuousChannels()[localIndex]->getGlobalIndex();
+			setSelectedChannel(globalIndex);
+		}
+	}
 }
 
 void MatlabInterface::process(AudioSampleBuffer& buffer)
