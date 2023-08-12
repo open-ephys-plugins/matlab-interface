@@ -1,4 +1,5 @@
 #include <JuceHeader.h>
+#include "../../Source/Processors/Events/Spike.h"
 
 #define WRITE_BUFFER_SIZE 40960
 #define READ_BUFFER_SIZE 1024
@@ -32,9 +33,21 @@ public:
 	/** Read incoming data */
 	int readData();
 
+	/** MY CODE*/
+	int writeSpike(int channels[], uint16 ids[], int64 sampleIdxs[], int nSpikes);
+	int isReady;
+	//int writeSpike(int * channels, uint16 * ids);
+	//int writeSpike(const SpikeChannel* channel, const Spike* spike);
+
+	//int writeSpike(int electrodeIndex, const Spike * spike);
+
 	int selectedChannel;
 
 	ScopedPointer<StreamingSocket> connection;
+
+	HeapBlock<float> m_scaledBuffer;
+	HeapBlock<int16> m_intBuffer;
+
 
 private:
 
@@ -45,4 +58,6 @@ private:
 	bool connected; //true if client (Matlab) has connected
 	char writeBuffer[WRITE_BUFFER_SIZE];
 	char readBuffer[READ_BUFFER_SIZE];
+	int writeBufferPointer=0;
+	char t_writeBuffer[WRITE_BUFFER_SIZE] = {0};
 };

@@ -1,9 +1,9 @@
 classdef OEClient < handle
     
-    %OECLIENT A client socket for receiving data streams from the Open-Ephys GUI. 
+    %OECLIENT A client socket for receiving data streams from the Open-Ephys GUI.
     %   This class encapsulates a socket on a dedicated, local port in order to
-    %   receive continous data stream from Open Ephys. 
-
+    %   receive continous data stream from Open Ephys.
+    
     properties (Access = public)
         header;
     end
@@ -19,13 +19,13 @@ classdef OEClient < handle
         stream_reader;
         buffered_reader;
     end
-
+    
     properties (Constant)
         END_OF_MESSAGE = '~';
-        MAX_CONNECT_ATTEMPTS = 5;
+        MAX_CONNECT_ATTEMPTS = 50;
         WRITE_MSG_SIZE_IN_BYTES = 1024;
     end
-
+    
     methods
         
         function self = OEClient(host, port)
@@ -41,23 +41,32 @@ classdef OEClient < handle
                 attempts = attempts + 1;
             end
             
-            if ~self.connected 
+            if ~self.connected
                 fprintf("Failed to connect to Open Ephys!\n");
             end
             
         end
-
+        
         function line = read(self)
-
-            line = self.buffered_reader.readLine;
-
+%             line=[];
+%             t=self.buffered_reader.read()
+%             while t~=-1
+%                 line=[line t];
+%                 t=self.buffered_reader.read()
+%             end
+%             line=[line t];
+if self.buffered_reader.ready()
+    line = self.buffered_reader.readLine();
+else
+    line=[];
+end
         end
-
+        
         function self = write(self, message)
             
-            fprintf("Size of msg: %d\n", length(message));
-            fprintf("Message: %s\n", message);
-   
+            %             fprintf("Size of msg: %d\n", length(message));
+            %             fprintf("Message: %s\n", message);
+            
             if (length(message)/2 == self.WRITE_MSG_SIZE_IN_BYTES)
                 self.stream_writer.writeBytes(message);
                 self.stream_writer.flush;
@@ -66,7 +75,7 @@ classdef OEClient < handle
                 self.stream_writer.writeBytes([message msg_pad]);
                 self.stream_writer.flush;
             end
-
+            
         end
         
         function self = connect(self, host, port)
@@ -87,12 +96,12 @@ classdef OEClient < handle
                 fprintf("Created output stream writer...\n");
                 self.stream_reader = InputStreamReader(self.in_stream);
                 fprintf("Created input stream reader...\n");
-                self.buffered_reader = BufferedReader(self.stream_reader);
+                self.buffered_reader = BufferedReader(self.stream_reader,65536);
                 fprintf("Created buffered reader...\n");
-            catch 
-                fprintf("Connecting...\n");
+            catch
+                fprintf("Connecting openEphys...\n");
             end
-           
+            
         end
         
     end

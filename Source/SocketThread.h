@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#include "EventQueue.h"
 #include "MatlabSocket.h"
 #include "DataQueue.h"
+#include "EventQueue.h"
 #include <atomic>
 
 #define BLOCK_MAX_WRITE_SAMPLES 4096
@@ -40,12 +41,14 @@ class SocketThread : public Thread
 public:
 
 	/** Constructor */
-	SocketThread();
+	//SocketThread();
+
+	SocketThread(MatlabInterface * parentNode);
 
 	/** Destructor */
 	~SocketThread();
 
-	void setQueuePointers(DataQueue* data);
+	void setQueuePointers(DataQueue * data, EventMsgQueue * events, SpikeMsgQueue * spikes);
 	void setSelectedChannel(int channel);
 
 	int openSocket(int port, String host); 
@@ -57,6 +60,8 @@ public:
 
 	std::unique_ptr<MatlabSocket> socket;
 
+	MatlabInterface *matlabInterface;
+
 private:
 	void writeHeader();
 	void writeData(const AudioSampleBuffer& buffer, int maxSamples, int maxEvents, int maxSpikes, bool lastBlock = false);
@@ -64,6 +69,8 @@ private:
 	Array<int> m_channelArray;
 
 	DataQueue* m_dataQueue;
+	EventMsgQueue* m_eventQueue;
+	SpikeMsgQueue *m_spikeQueue;
 
 	std::atomic<bool> m_receivedFirstBlock;
 	std::atomic<bool> m_cleanExit;
@@ -72,6 +79,12 @@ private:
 	int m_experimentNumber;
 	int m_recordingNumber;
 	int m_numChannels;
+
+	int channels[128] = {0};
+	uint16 ids[128] = {0};
+	int64 sampleIdxs[128] = {0};
+
+	//RecordNode *recordNode;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SocketThread);
 };
