@@ -65,17 +65,17 @@ MatlabInterfaceEditor::MatlabInterfaceEditor(MatlabInterface* parentNode)
 
 	desiredWidth = 230;
 
-	addTextBoxParameterEditor("host_address", 10, 25);
+	addTextBoxParameterEditor(Parameter::PROCESSOR_SCOPE, "host_address", 15, 29);
 
-	addTextBoxParameterEditor("port_number", 115, 25);
+	addTextBoxParameterEditor(Parameter::PROCESSOR_SCOPE, "port_number", 15, 54);
 
 	connectButton = std::make_unique<UtilityButton>("Connect", Font("Small Text", 13, Font::bold));
 	connectButton->setRadius(3.0f);
-	connectButton->setBounds(70, 75, 90, 20);
+	connectButton->setBounds(15, 79, 90, 20);
 	connectButton->addListener(this);
 	addAndMakeVisible(connectButton.get());
 
-	addSelectedChannelsParameterEditor("Channel", 75, 100);
+	addSelectedChannelsParameterEditor(Parameter::STREAM_SCOPE, "channel", 15, 104);
 
 	count = 0;
 }

@@ -17,6 +17,16 @@ Before starting data acquisition, you will need to press the 'Connect' button in
 
 To initialize the connection on the Matlab side, you will need to call your generated script from Matlab following the instructions below. Once the connection has been initiated on both sides, pressing the Play button in the Open Ephys GUI will automatically stream the incoming data to Matlab, and then back to the GUI for further processing. 
 
+## Quickstart
+
+1. Start with the Plotter example in the MatlabInterface/Resources folder. In the Matlab Command Window call:
+
+    Plotter(‘127.0.0.1’, 1234)
+
+2. Click the ‘Connect' button in the MatlabInterface plugin in OpenEphys GUI.
+
+3. Start acquisition via the GUI to automatically plot data in Matlab.
+
 ### Matlab API
 
 In order to process the incoming data in Matlab, you will need to leverage the included Matlab API. The API was designed specifically to introduce/reinforce object-oriented programming and to encourage Matlab evangelists to consider developing plugins in C++. 

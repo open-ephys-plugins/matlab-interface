@@ -9,9 +9,9 @@ MatlabInterface::MatlabInterface()
 {
 	setProcessorType(Plugin::Processor::FILTER);
 
-	addStringParameter(Parameter::GLOBAL_SCOPE, "host_address", "Set host address", "127.0.0.1", true);
-    addStringParameter(Parameter::GLOBAL_SCOPE, "port_number", "Set port number", "1234", true);
-	addSelectedChannelsParameter(Parameter::STREAM_SCOPE, "Channel", "The continuous channel to analyze", 1);
+	addStringParameter(Parameter::PROCESSOR_SCOPE, "host_address", "Host address", "Set host address", "127.0.0.1", true);
+    addStringParameter(Parameter::PROCESSOR_SCOPE, "port_number", "Port number", "Set port number", "1234", true);
+	addSelectedChannelsParameter(Parameter::STREAM_SCOPE, "channel", "Channel", "The continuous channel to analyze", 1);
 
 }
 
@@ -59,7 +59,7 @@ AudioProcessorEditor* MatlabInterface::createEditor()
 
 void MatlabInterface::parameterValueChanged(Parameter* param)
 {
-	if (param->getName().equalsIgnoreCase("Channel"))
+	if (param->getName().equalsIgnoreCase("channel"))
 	{
 		Array<var>* array = param->getValue().getArray();
 
@@ -107,5 +107,5 @@ void MatlabInterface::updateSettings()
 	isEnabled = connected;
 
 	for (auto stream : getDataStreams())
-        parameterValueChanged(stream->getParameter("Channel"));
+        parameterValueChanged(stream->getParameter("channel"));
 }
