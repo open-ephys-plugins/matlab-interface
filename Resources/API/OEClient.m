@@ -39,6 +39,7 @@ classdef OEClient < handle
             while ~self.connected && attempts < self.MAX_CONNECT_ATTEMPTS
                 self.connect(host,port);
                 attempts = attempts + 1;
+                pause(2)
             end
             
             if ~self.connected 

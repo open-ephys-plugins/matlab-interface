@@ -69,7 +69,7 @@ MatlabInterfaceEditor::MatlabInterfaceEditor(MatlabInterface* parentNode)
 
 	addTextBoxParameterEditor(Parameter::PROCESSOR_SCOPE, "port_number", 15, 54);
 
-	connectButton = std::make_unique<UtilityButton>("Connect", Font("Small Text", 13, Font::bold));
+	connectButton = std::make_unique<UtilityButton>("Connect");
 	connectButton->setRadius(3.0f);
 	connectButton->setBounds(15, 79, 90, 20);
 	connectButton->addListener(this);
